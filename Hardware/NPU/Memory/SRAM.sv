@@ -5,6 +5,7 @@
 // Execution is blocking, so the two ports are never both active for the same
 // region at the same time. 32-bit word data; addr is a byte address
 // (word-aligned, low 2 bits ignored).
+
 module SRAM #(
     parameter ADDR_BITS = `SRAM_ADDR_BITS,       // 22 -> 4 MiB
     parameter DATA_BITS = `DATA_BITS             // 32

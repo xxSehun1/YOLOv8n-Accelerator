@@ -1,11 +1,17 @@
 `include "define.svh"
-// IOMap_Buffer: 64 KiB ping-pong activation buffer (instantiate x2).
+// IOMap_Buffer: activation streaming engine over SRAM (instantiate x2).
 //
-// FSM: INPUT_READ <-> OUTPUT_WRITE. The two instances swap each layer, so
-// layer N's output buffer becomes layer N+1's input buffer.
-//   INPUT_READ:   streams the input feature map from SRAM towards the
-//                 Line Buffer / PE array.
-//   OUTPUT_WRITE: receives PPU results and writes them back to SRAM.
+// The two instances ping-pong each layer: layer N writes its output into one
+// instance (OUTPUT_WRITE) while reading layer N-1's output (its input) from
+// the other (INPUT_READ). After the layer finishes, the controller flips
+// mode_write to swap roles. The activations live in SRAM; this module is a
+// streaming engine that walks length/4 word addresses starting at base_addr.
+//
+// FSM: IDLE -> READ_ISSUE -> READ_LATCH -> READ_OUT -> READ_ISSUE -> ... -> DONE
+//      IDLE -> WRITE                                          -> DONE
+//
+// Read pipeline takes 3 cycles per word (issue, 1-cycle SRAM latency, emit
+// with backpressure). Write is one word per cycle while ppu_valid is high.
 module IOMap_Buffer #(
     parameter DEPTH = (64*1024) / (`DATA_BITS/8)
 )(
@@ -15,8 +21,8 @@ module IOMap_Buffer #(
     // Control from the Ping-Pong Controller.
     input  logic         mode_write,             // 0 = INPUT_READ, 1 = OUTPUT_WRITE
     input  logic         start,
-    input  logic [`SRAM_ADDR_BITS-1:0] base_addr,// fmap base in SRAM
-    input  logic [31:0]  length,                 // fmap size in bytes
+    input  logic [`SRAM_ADDR_BITS-1:0] base_addr,
+    input  logic [31:0]  length,                 // bytes
     output logic         done,
 
     // SRAM port (read in INPUT mode, write in OUTPUT mode).
@@ -36,6 +42,88 @@ module IOMap_Buffer #(
     input  logic         ppu_valid,
     output logic         ppu_ready
 );
-    // TODO: INPUT_READ streams SRAM -> ifmap_*; OUTPUT_WRITE drains ppu_* into
-    // SRAM.
+    typedef enum logic [2:0] {
+        S_IDLE, S_RD_ISSUE, S_RD_LATCH, S_RD_OUT, S_WR, S_DONE
+    } state_t;
+    state_t state, next;
+
+    logic [31:0] words_total;
+    logic [31:0] word_idx;
+    logic [`SRAM_ADDR_BITS-1:0] cur_addr;
+    logic [`DATA_BITS-1:0]      rd_reg;
+
+    // Next-state logic.
+    always_comb begin
+        next = state;
+        case (state)
+            S_IDLE:     if (start) next = mode_write ? S_WR : S_RD_ISSUE;
+            S_RD_ISSUE:            next = S_RD_LATCH;
+            S_RD_LATCH:            next = S_RD_OUT;
+            S_RD_OUT:   if (ifmap_ready) begin
+                            if (word_idx == words_total - 1) next = S_DONE;
+                            else                             next = S_RD_ISSUE;
+                        end
+            S_WR:       if (ppu_valid && word_idx == words_total - 1) next = S_DONE;
+            S_DONE:                next = S_IDLE;
+            default:               next = S_IDLE;
+        endcase
+    end
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            state       <= S_IDLE;
+            word_idx    <= '0;
+            words_total <= '0;
+            cur_addr    <= '0;
+            rd_reg      <= '0;
+        end else begin
+            state <= next;
+            case (state)
+                S_IDLE: if (start) begin
+                    word_idx    <= '0;
+                    words_total <= length >> 2;
+                    cur_addr    <= base_addr;
+                end
+
+                S_RD_LATCH: rd_reg <= sram_rdata;     // 1-cycle SRAM latency
+
+                S_RD_OUT: if (ifmap_ready) begin
+                    word_idx <= word_idx + 1'b1;
+                    cur_addr <= cur_addr + 'd4;
+                end
+
+                S_WR: if (ppu_valid) begin
+                    word_idx <= word_idx + 1'b1;
+                    cur_addr <= cur_addr + 'd4;
+                end
+
+                default: ;
+            endcase
+        end
+    end
+
+    // Combinational outputs.
+    always_comb begin
+        sram_en    = 1'b0;
+        sram_we    = 1'b0;
+        sram_addr  = cur_addr;
+        sram_wdata = '0;
+        case (state)
+            S_RD_ISSUE: begin
+                sram_en = 1'b1;
+            end
+            S_WR: if (ppu_valid) begin
+                sram_en    = 1'b1;
+                sram_we    = 1'b1;
+                sram_wdata = ppu_data;
+            end
+            default: ;
+        endcase
+    end
+
+    assign ifmap_data  = rd_reg;
+    assign ifmap_valid = (state == S_RD_OUT);
+    assign ppu_ready   = (state == S_WR);
+    assign done        = (state == S_DONE);
+
 endmodule

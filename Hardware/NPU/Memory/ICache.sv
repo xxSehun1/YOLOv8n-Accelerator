@@ -1,8 +1,7 @@
 `include "define.svh"
 // ICache: instruction memory.
-//
-// Holds the assembled program (npu_program.hex). Combinational read on pc, as
-// assumed by the Decoder.
+
+
 module ICache #(
     parameter DEPTH = 4096                       // 64 KiB / 16 B per instr
 )(
