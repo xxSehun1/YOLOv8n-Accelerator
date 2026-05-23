@@ -2,6 +2,7 @@
 
 run: 
 	python main.py
+	python gen_shared_hex.py
 
 sim:
 	python npu_iss.py
