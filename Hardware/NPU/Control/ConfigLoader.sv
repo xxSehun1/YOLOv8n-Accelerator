@@ -53,15 +53,18 @@ module ConfigLoader #(
     logic [CNT_W-1:0] cnt;
 
     // Next-state logic.
+    //   XID scan chain has NUM_PE registers (one per PE).
+    //   YID scan chain has NUMS_PE_ROW registers (one per row -- YID is
+    //   shared across all PEs in a row, confirmed against lab-3 tb_array.cpp).
     always_comb begin
         next = state;
         case (state)
-            S_IDLE:     if (start)                  next = S_SCAN_XID;
-            S_SCAN_XID: if (cnt == NUM_PE - 1)      next = S_SCAN_YID;
-            S_SCAN_YID: if (cnt == NUM_PE - 1)      next = S_SCAN_LN;
-            S_SCAN_LN:                              next = S_DONE;
-            S_DONE:                                 next = S_DONE;
-            default:                                next = S_IDLE;
+            S_IDLE:     if (start)                          next = S_SCAN_XID;
+            S_SCAN_XID: if (cnt == NUM_PE - 1)              next = S_SCAN_YID;
+            S_SCAN_YID: if (cnt == `NUMS_PE_ROW - 1)         next = S_SCAN_LN;
+            S_SCAN_LN:                                      next = S_DONE;
+            S_DONE:                                         next = S_DONE;
+            default:                                        next = S_IDLE;
         endcase
     end
 
@@ -81,8 +84,22 @@ module ConfigLoader #(
     end
 
 
+    // Scan-chain convention (verified by PE_array_tb): the LAST scanned-in
+    // value lands at PE[0]; the FIRST scanned-in value lands at the end of
+    // the chain (PE[NUM_PE-1] for XID, row[NUMS_PE_ROW-1] for YID).
+    //   XID phase: feed scan_rom[NUM_PE-1-cnt]; gen_shared_hex packs every PE
+    //              with its own XIDs, so PE[i] receives scan_rom[i] when the
+    //              chain settles.
+    //   YID phase: feed scan_rom[(NUMS_PE_ROW-1-cnt) * NUMS_PE_COL]; YID is
+    //              row-shared so all PEs in a row carry the same YID values
+    //              in their scan_rom entry. We read column 0 of each row.
     logic [ROM_W-1:0] cur;
-    assign cur = scan_rom[cnt];
+    always_comb begin
+        if (state == S_SCAN_YID)
+            cur = scan_rom[(`NUMS_PE_ROW - 1 - cnt) * `NUMS_PE_COL];
+        else
+            cur = scan_rom[NUM_PE - 1 - cnt];
+    end
 
     assign ifmap_XID_scan_in  = cur[0       +: X];
     assign filter_XID_scan_in = cur[  X     +: X];

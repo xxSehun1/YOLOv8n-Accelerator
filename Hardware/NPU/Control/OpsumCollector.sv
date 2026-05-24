@@ -27,6 +27,7 @@ module OpsumCollector #(
     input  logic         bias_en,
     input  logic         pixel_init,
     input  logic         pixel_last,
+    input  logic         layer_last,   // HIGH only on final opsum_accept of the layer
     input  logic [3:0]   lane_sel,
 
     // Bias stream from Weight_Buffer.
@@ -93,7 +94,18 @@ module OpsumCollector #(
             S_IDLE:       if (layer_start)
                               next = bias_en ? S_BIAS_LOAD : S_COLLECT;
             S_BIAS_LOAD:  if (bias_cnt == LANES) next = S_COLLECT;
-            S_COLLECT:    if (layer_last_seen && drain_pending == '0 && !pack_valid)
+            // Stay in S_COLLECT until ALL of the following are true:
+            //   1. layer_last_seen: the final word of the layer has been accepted
+            //   2. (drain_pending | psum_complete) == '0: no lane is either
+            //      already queued for draining (drain_pending) nor in the
+            //      one-cycle window where psum_complete just fired but
+            //      drain_pending has not yet been set (psum_complete).
+            //   3. !pack_valid: the last packed word has been handed off.
+            // Without including psum_complete in the check, there is a one-cycle
+            // race: layer_last_seen is set the cycle after the last accept, which
+            // is the same cycle psum_complete fires for the last lane but BEFORE
+            // drain_pending is updated — causing a spurious early exit.
+            S_COLLECT:    if (layer_last_seen && (drain_pending | psum_complete) == '0 && !pack_valid)
                               next = S_DRAIN_TAIL;
             S_DRAIN_TAIL: if (!pack_valid)       next = S_DONE;
             S_DONE:                              next = S_IDLE;
@@ -139,8 +151,10 @@ module OpsumCollector #(
                     for (k = 0; k < LANES; k++)
                         if (psum_complete[k]) drain_pending[k] <= 1'b1;
 
-                    // Track layer end (pixel_last on the last accepted word).
-                    if (state == S_COLLECT && opsum_valid && pixel_last)
+                    // Track layer end: use layer_last (not pixel_last).
+                    // pixel_last=1 on EVERY accept so PSUM_acc completes per word;
+                    // layer_last=1 ONLY on the final accept of the whole layer.
+                    if (state == S_COLLECT && opsum_valid && layer_last)
                         layer_last_seen <= 1'b1;
 
                     // Walk one pending lane per cycle through the PPU; pack 4

@@ -41,7 +41,7 @@ module GON_MulticastController #(
 
     
     assign valid_out = judge ? valid_in : 1'b0;
-    assign ready_out = judge ? ready_in : 1'b0;
+    assign ready_out = judge ? ready_in : 1'b1;
     assign id = id_reg;
 
 

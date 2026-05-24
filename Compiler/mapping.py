@@ -163,17 +163,37 @@ def _evaluate(mapping, conv, hw):
 
 
 # Scan-chain / LN / PE_EN generation (geometric).
-def _gen_config(hw):
+def _gen_config(hw, active_sets=None, active_cols=None):
     """Geometric GIN/GON scan chains — identical for every conv layer.
 
     These depend only on the PE-array geometry, so they are computed once
     and scanned into the hardware at startup. Stride is *not* baked in
     here: the controller applies the stride when it walks the ifmap, so
     the diagonal ifmap-XID pattern stays the same for every layer.
+
+    active_sets: number of PE sets that will actually receive filter data
+    (= T_H * T_W in the controller). Rows beyond this many sets get
+    DEFAULT XID for ifmap/ipsum/opsum so they never block the GIN when
+    they are stuck in WEIGHT (having never received filter data).
+    Defaults to all complete sets in the array.
+
+    active_cols: number of PE columns whose LN chains will be activated by
+    the ipsum GIN (= E, the number of output rows per pass). PE columns
+    >= active_cols get DEFAULT ifmap/ipsum/opsum XID so they stay in IF
+    state with judge=0 (pass-through) and never block any GIN handshake.
+    Without this limit, diagonal PEs in columns >= E that receive real
+    ifmap XID get stuck in COMPUTE after the first pass (they never
+    receive ipsum since the ipsum loop only covers 0..E-1), then block
+    the second S_IFMAP when their XID is re-targeted.
+    Defaults to all columns (hw.pe_w).
     """
     R       = FILT_R
     H, W    = hw.pe_h, hw.pe_w
     sets    = H // R
+    if active_sets is None:
+        active_sets = sets
+    if active_cols is None:
+        active_cols = W
     DX, DY  = hw.default_xid, hw.default_yid
 
     fx = []; fy = []; ix = []; iy = []
@@ -182,17 +202,22 @@ def _gen_config(hw):
         s        = row // R
         kr       = row % R
         in_set   = s < sets
-        entry    = in_set and kr == 0
-        exit_    = in_set and kr == R - 1
+        active   = s < active_sets          # in a set that receives filter data
+        entry    = active and kr == R - 1  # ipsum entry = bottom row of set (GIN side)
+        exit_    = active and kr == 0      # opsum exit  = top row of set (GON side)
         fy.append(s if in_set else DY)
-        iy.append(0)
+        iy.append(0 if active else DY)      # DEFAULT YID: non-active rows not targeted by ifmap
         py.append(s if entry else DY)
         oy.append(s if exit_ else DY)
         for col in range(W):
+            col_active = col < active_cols  # within the active LN-chain column band
             fx.append(kr  if in_set else DX)
-            ix.append(col + kr)
-            px.append(col if entry else DX)
-            ox.append(col if exit_ else DX)
+            # Diagonal ifmap XID — only for columns whose LN chain will be
+            # activated by ipsum.  Columns >= active_cols stay in IF with
+            # DEFAULT XID (judge=0) and never block any subsequent ifmap send.
+            ix.append((col + kr) if (active and col_active) else DX)
+            px.append(col if (entry and col_active) else DX)
+            ox.append(col if (exit_ and col_active) else DX)
 
     # LN: chain the R rows of each set; break at the set boundary
     ln = 0

@@ -17,9 +17,11 @@
 `define DATA_BITS      32
 `define PSUM_BITS      32
 
-// GIN / GON multicast tag widths (4 bits address up to 16).
-`define XID_BITS       4
-`define YID_BITS       4
+// GIN / GON multicast tag widths.
+// 16 columns/rows need IDs 0-15 plus one DEFAULT that must not collide,
+// so 5 bits are required (DEFAULT = 31).  Must match gen_shared_hex.py.
+`define XID_BITS       5
+`define YID_BITS       5
 
 // PE configuration bus (PE.sv reads out_ch_num from i_config[9:7]).
 `define CONFIG_SIZE    32
@@ -48,35 +50,35 @@
 
 // EXEC instruction fields (CONV / POOL / ADD / OTHER / HALT).
 //   opcode | IN(32) | WGT(32) | OUT(32) | FLAGS(12) | STRIDE(4) | PAD(4) | KERNEL(4) | rsv(4)
-`define EXEC_IN(i)      (i)[123:92]
-`define EXEC_WGT(i)     (i)[91:60]
-`define EXEC_OUT(i)     (i)[59:28]
-`define EXEC_FLAGS(i)   (i)[27:16]
-`define EXEC_STRIDE(i)  (i)[15:12]
-`define EXEC_PAD(i)     (i)[11:8]
-`define EXEC_KERNEL(i)  (i)[7:4]
+`define EXEC_IN(i)      i[123:92]
+`define EXEC_WGT(i)     i[91:60]
+`define EXEC_OUT(i)     i[59:28]
+`define EXEC_FLAGS(i)   i[27:16]
+`define EXEC_STRIDE(i)  i[15:12]
+`define EXEC_PAD(i)     i[11:8]
+`define EXEC_KERNEL(i)  i[7:4]
 
 // CONFIG instruction fields.
 //   opcode | IN_H(16) | IN_W(16) | IN_C(16) | OUT_C(16) | STRIDE(4)
 //          | rsv(40) | PE_CONFIG(10) | SHIFT(6)
-`define CFG_IN_H(i)     (i)[123:108]
-`define CFG_IN_W(i)     (i)[107:92]
-`define CFG_IN_C(i)     (i)[91:76]
-`define CFG_OUT_C(i)    (i)[75:60]
-`define CFG_STRIDE(i)   (i)[59:56]
-`define CFG_PCONFIG(i)  (i)[15:6]
-`define CFG_SHIFT(i)    (i)[5:0]
+`define CFG_IN_H(i)     i[123:108]
+`define CFG_IN_W(i)     i[107:92]
+`define CFG_IN_C(i)     i[91:76]
+`define CFG_OUT_C(i)    i[75:60]
+`define CFG_STRIDE(i)   i[59:56]
+`define CFG_PCONFIG(i)  i[15:6]
+`define CFG_SHIFT(i)    i[5:0]
 
 // DMA instruction fields (DMA_LD / DMA_ST).
 //   opcode | DRAM(32) | SRAM(32) | SIZE(32) | rsv(28)
-`define DMA_DRAM(i)     (i)[123:92]
-`define DMA_SRAM(i)     (i)[91:60]
-`define DMA_SIZE(i)     (i)[59:28]
+`define DMA_DRAM(i)     i[123:92]
+`define DMA_SRAM(i)     i[91:60]
+`define DMA_SIZE(i)     i[59:28]
 
 // ADDCFG instruction fields.
 //   opcode | LHS_SHIFT(6) | RHS_SHIFT(6) | rsv(112)
-`define ADDCFG_LHS(i)   (i)[123:118]
-`define ADDCFG_RHS(i)   (i)[117:112]
+`define ADDCFG_LHS(i)   i[123:118]
+`define ADDCFG_RHS(i)   i[117:112]
 
 // Memory map: DRAM (off-chip).
 `define DRAM_INPUT_BASE   32'h0000_0000   // input image

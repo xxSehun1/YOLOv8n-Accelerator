@@ -1,17 +1,6 @@
 `include "define.svh"
-// IOMap_Buffer: activation streaming engine over SRAM (instantiate x2).
-//
-// The two instances ping-pong each layer: layer N writes its output into one
-// instance (OUTPUT_WRITE) while reading layer N-1's output (its input) from
-// the other (INPUT_READ). After the layer finishes, the controller flips
-// mode_write to swap roles. The activations live in SRAM; this module is a
-// streaming engine that walks length/4 word addresses starting at base_addr.
-//
-// FSM: IDLE -> READ_ISSUE -> READ_LATCH -> READ_OUT -> READ_ISSUE -> ... -> DONE
-//      IDLE -> WRITE                                          -> DONE
-//
-// Read pipeline takes 3 cycles per word (issue, 1-cycle SRAM latency, emit
-// with backpressure). Write is one word per cycle while ppu_valid is high.
+
+
 module IOMap_Buffer #(
     parameter DEPTH = (64*1024) / (`DATA_BITS/8)
 )(
