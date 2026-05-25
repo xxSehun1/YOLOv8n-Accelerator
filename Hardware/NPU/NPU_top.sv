@@ -283,7 +283,8 @@ module NPU_top (
         .add_en(add_en),
         .add_lhs_shift(add_lhs_shift), .add_rhs_shift(add_rhs_shift),
         .pp_ipsum_valid(pp_ipsum_valid),
-        .ifmap_en(ifmap_en)
+        .ifmap_en(ifmap_en),
+        .oc_done(oc_done)
     );
 
     // Weight_Buffer ping-pong. wb_sel selects which instance the controller

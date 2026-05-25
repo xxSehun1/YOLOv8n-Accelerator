@@ -60,18 +60,18 @@ module NPU_top_tb;
         if (!rst) begin
             hb_cnt++;
             if (hb_cnt % 1000 == 0) begin
-                $display("[%0t] pc=%0d halt=%0b cfg=%0b  ppc_st=%0d  wb_d=%0b iob_in_d=%0b iob_out_d=%0b  exec_v=%0b exec_d=%0b | ifmap_en=%0b lb_win_v=%0b ifmap_rdy=%0b filter_rdy=%0b | pe00_st=%0d | oc_st=%0d ll=%0b lls=%0b dp=%0b pv=%0b",
+                $display("[%0t] pc=%0d halt=%0b cfg=%0b  ppc_st=%0d  wb_d=%0b iob_in_d=%0b iob_out_d=%0b  exec_v=%0b exec_d=%0b | ifmap_en=%0b lb_ifmap_v=%0b ifmap_rdy=%0b filter_rdy=%0b | pe00_st=%0d | oc_st=%0d ll=%0b lls=%0b dp=%0b pv=%0b",
                     $time, dut.pc, halted, dut.cfg_done,
                     dut.i_ppc.state,
                     dut.wb_fill_done, dut.iob_in_done, dut.iob_out_done,
                     dut.exec_valid, dut.exec_done,
-                    dut.ifmap_en, dut.lb_win_valid,
+                    dut.ifmap_en, dut.lb_ifmap_valid,
                     dut.GLB_ifmap_ready, dut.GLB_filter_ready,
                     dut.i_pe_array.ROW[0].COL[0].pe_inst.state,
                     dut.i_oc.state,
                     dut.oc_layer_last,
                     dut.i_oc.layer_last_seen,
-                    |dut.i_oc.drain_pending,
+                    dut.i_oc.drain_pending,
                     dut.i_oc.pack_valid);
             end
         end
@@ -96,8 +96,11 @@ module NPU_top_tb;
             dram_wgt_mem[i] = 32'h00000000;
         end
 
-        // Input pixel (1,1) channel 0 = 0x81. Index = 1*4 + 1 = 5.
-        dram_in_mem[5] = 32'h80808081;
+        // Input pixel (1,1) ALL 4 channels = 0x81 (+1 after zp=128). Index = 1*4+1 = 5.
+        // All 4 IC must be non-zero so each IC contributes 1 to the MAC,
+        // giving psum = 4 per output channel -> uint8 = 128+4 = 0x84.
+        // (Was 32'h80808081: only IC=0 was +1, giving psum=1 -> 0x81 != 0x84.)
+        dram_in_mem[5] = 32'h81818181;
 
         // 4 OC x 4 IC x 9 = 36 weight words, all = +1 in every byte.
         for (int i = 0; i < 36; i++) dram_wgt_mem[i] = 32'h01010101;

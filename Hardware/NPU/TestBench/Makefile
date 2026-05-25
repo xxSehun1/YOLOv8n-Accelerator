@@ -15,7 +15,7 @@
 #
 # Each testbench gets its own --Mdir (obj_<name>) so multiple builds coexist.
 
-VFLAGS := --binary --timing -j 0 -Wno-fatal
+VFLAGS := --binary --timing -j 16 -Wno-fatal
 
 VINCS := +incdir+.. \
          +incdir+../Control \

@@ -71,20 +71,15 @@ module OpsumCollector #(
     logic signed [`PSUM_BITS-1:0] bias_buf [0:LANES-1];
     logic [$clog2(LANES+1)-1:0] bias_cnt;
 
-    // Drain queue: a one-hot ring tracking which lanes still need to flow
-    // through the PPU. A bit is set when psum_complete[i] pulses; cleared
-    // when that lane is sent through the PPU.
+    // Drain queue
     logic [LANES-1:0] drain_pending;
 
     // PPU walk pointer + 4-lane pack staging.
-    logic [3:0] drain_idx;
+    logic [$clog2(LANES)-1:0] drain_idx;
     logic [1:0] pack_cnt;
     logic [`DATA_BITS-1:0] pack_buf;     // 4 int8s assembled here
     logic                  pack_valid;   // act_valid pending
 
-    // pixel_last sticky: once the controller asserts pixel_last for the last
-    // partial, no more opsum words will arrive after the corresponding
-    // psum_complete pulses; the FSM uses this to know it can stop COLLECT.
     logic layer_last_seen;
 
     // Next-state logic.
@@ -94,23 +89,24 @@ module OpsumCollector #(
             S_IDLE:       if (layer_start)
                               next = bias_en ? S_BIAS_LOAD : S_COLLECT;
             S_BIAS_LOAD:  if (bias_cnt == LANES) next = S_COLLECT;
-            // Stay in S_COLLECT until ALL of the following are true:
-            //   1. layer_last_seen: the final word of the layer has been accepted
-            //   2. (drain_pending | psum_complete) == '0: no lane is either
-            //      already queued for draining (drain_pending) nor in the
-            //      one-cycle window where psum_complete just fired but
-            //      drain_pending has not yet been set (psum_complete).
-            //   3. !pack_valid: the last packed word has been handed off.
-            // Without including psum_complete in the check, there is a one-cycle
-            // race: layer_last_seen is set the cycle after the last accept, which
-            // is the same cycle psum_complete fires for the last lane but BEFORE
-            // drain_pending is updated — causing a spurious early exit.
             S_COLLECT:    if (layer_last_seen && (drain_pending | psum_complete) == '0 && !pack_valid)
                               next = S_DRAIN_TAIL;
             S_DRAIN_TAIL: if (!pack_valid)       next = S_DONE;
             S_DONE:                              next = S_IDLE;
             default:                             next = S_IDLE;
         endcase
+    end
+
+
+    logic [$clog2(LANES)-1:0] drain_lane;
+    always_comb begin
+        drain_lane = '0;
+        for (int k = 0; k < LANES; k++) begin
+            if (drain_pending[(drain_idx + k) % LANES]) begin
+                drain_lane = (drain_idx + k) % LANES;
+                break;
+            end
+        end
     end
 
     integer k;
@@ -148,33 +144,27 @@ module OpsumCollector #(
 
                 S_COLLECT, S_DRAIN_TAIL: begin
                     // Mark lanes whose reduction just finished as pending drain.
-                    for (k = 0; k < LANES; k++)
+                    for (k = 0; k < LANES; k++) begin
                         if (psum_complete[k]) drain_pending[k] <= 1'b1;
+                    end
 
-                    // Track layer end: use layer_last (not pixel_last).
-                    // pixel_last=1 on EVERY accept so PSUM_acc completes per word;
-                    // layer_last=1 ONLY on the final accept of the whole layer.
-                    if (state == S_COLLECT && opsum_valid && layer_last)
+                    // Track layer end
+                    if (state == S_COLLECT && opsum_valid && layer_last && opsum_ready)
                         layer_last_seen <= 1'b1;
 
                     // Walk one pending lane per cycle through the PPU; pack 4
                     // int8 results into one 32-bit word.
                     if (drain_pending != '0 && !pack_valid) begin
-                        // Find next set bit starting at drain_idx (linear scan).
-                        // Synthesizable as a priority encoder.
-                        logic stepped;
-                        stepped = 1'b0;
-                        for (k = 0; k < LANES; k++) begin
-                            if (!stepped && drain_pending[(drain_idx + k) % LANES]) begin
-                                automatic int j = (drain_idx + k) % LANES;
-                                drain_pending[j] <= 1'b0;
-                                pack_buf[pack_cnt*8 +: 8] <= ppu_data_out;  // uses combinational PPU result
-                                pack_cnt  <= pack_cnt + 1'b1;
-                                drain_idx <= (j + 1) % LANES;
-                                if (pack_cnt == 3) pack_valid <= 1'b1;
-                                stepped = 1'b1;
-                            end
-                        end
+                        // FIX: Use the combinationally determined drain_lane
+                        drain_pending[drain_lane] <= 1'b0;
+                        pack_buf[pack_cnt*8 +: 8] <= ppu_data_out;  // uses combinational PPU result
+                        pack_cnt  <= pack_cnt + 1'b1;
+                        drain_idx <= (drain_lane + 1) % LANES;
+                        if (pack_cnt == 2'd3) pack_valid <= 1'b1;
+                    end 
+                    // FIX: Tail flush logic for handling non-multiple of 4 output sizes
+                    else if (state == S_DRAIN_TAIL && drain_pending == '0 && pack_cnt > 0 && !pack_valid) begin
+                        pack_valid <= 1'b1; 
                     end
 
                     // Hand off packed word to IOMap_Buffer.
@@ -208,26 +198,18 @@ module OpsumCollector #(
         psum_init     = '0;
         psum_accum_en = '0;
         psum_last     = '0;
-        if (state == S_COLLECT && opsum_valid) begin
+        // Check opsum_ready to ensure we only apply the command when we actually accept
+        if (state == S_COLLECT && opsum_valid && opsum_ready) begin
             psum_init[lane_sel]     = pixel_init;
             psum_accum_en[lane_sel] = !pixel_init;
             psum_last[lane_sel]     = pixel_last;
         end
     end
 
-    // Always accept opsum words while collecting.
-    assign opsum_ready = (state == S_COLLECT);
 
-    // Pick which lane's psum currently feeds the PPU (priority scan).
-    logic [3:0] drain_lane;
-    always_comb begin
-        drain_lane = '0;
-        for (int k = 0; k < LANES; k++)
-            if (drain_pending[(drain_idx + k) % LANES]) begin
-                drain_lane = (drain_idx + k) % LANES;
-                break;
-            end
-    end
+    assign opsum_ready = (state == S_COLLECT) && (drain_pending[lane_sel] == 1'b0);
+
+    // Feed the selected lane's PSUM output into the PPU
     assign ppu_data_in = psum_out_flat[drain_lane*`PSUM_BITS +: `DATA_BITS];
 
     // Packed activation handoff.
