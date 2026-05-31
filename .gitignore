@@ -7,3 +7,17 @@
 *.pt
 *.pth
 *.onnx
+
+# Python cache
+__pycache__/
+
+# RTL simulation artifacts
+simv*
+csrc/
+ucli.key
+xcelium.d/
+xrun.history
+xrun.log
+Hardware/NPU/TestBench/npu_program.hex
+Hardware/NPU/TestBench/shared_config.hex
+Hardware/NPU/TestBench/vc_hdrs.h

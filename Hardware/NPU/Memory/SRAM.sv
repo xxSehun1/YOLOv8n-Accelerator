@@ -31,7 +31,7 @@ module SRAM #(
     logic [DATA_BITS-1:0] mem [0:WORDS-1];
 
     // Port 0.
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (a_en) begin
             if (a_we) mem[a_addr[ADDR_BITS-1:WORD_LSB]] <= a_wdata;
             a_rdata <= mem[a_addr[ADDR_BITS-1:WORD_LSB]];
@@ -39,7 +39,7 @@ module SRAM #(
     end
 
     // Port 1.
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (b_en) begin
             if (b_we) mem[b_addr[ADDR_BITS-1:WORD_LSB]] <= b_wdata;
             b_rdata <= mem[b_addr[ADDR_BITS-1:WORD_LSB]];

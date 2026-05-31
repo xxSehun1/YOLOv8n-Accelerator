@@ -32,17 +32,31 @@ module DMA_ctrl (
     output logic         sram_we,
     output logic [`SRAM_ADDR_BITS-1:0] sram_addr,
     output logic [`DATA_BITS-1:0]      sram_wdata,
-    input  logic [`DATA_BITS-1:0]      sram_rdata
+    input  logic [`DATA_BITS-1:0]      sram_rdata,
+
+    // Simulation/debug observability for the current compiler contract.
+    output logic         debug_input_loaded,
+    output logic [15:0]  debug_weight_load_count,
+    output logic [15:0]  debug_sram_copy_count,
+    output logic [15:0]  debug_store_count
 );
-    // v1 scope: handles DMA_LD (DRAM->SRAM) and DMA_ST (SRAM->DRAM). Concat
-    // (SRAM->SRAM) is not yet distinguishable from a DMA_LD and is left for a
-    // follow-up (needs a dedicated opcode or flag).
+    // Current compiler/ISS compatibility:
+    //   DMA_ST                      : SRAM[dma_sram] -> DRAM[dma_dram]
+    //   DMA_LD dma_dram >= WEIGHT   : DRAM[dma_dram] -> SRAM[dma_sram]
+    //   first DMA_LD below WEIGHT   : DRAM input     -> SRAM[dma_sram]
+    //   later DMA_LD below WEIGHT   : SRAM[dma_dram] -> SRAM[dma_sram]
+    //
+    // The final ISA should use an explicit DMA_COPY/CONCAT op. This overload is
+    // kept here so RTL simulation matches the current generated program.
 
     typedef enum logic [1:0] {S_IDLE, S_RD, S_WR, S_DONE} state_t;
     state_t state, next;
 
     logic [31:0] widx;       // current word index
     logic [31:0] nwords;     // total words = size / 4
+    logic        input_loaded;
+    logic        tr_is_store;
+    logic        tr_src_sram;
 
     // Next-state logic.
     always_comb begin
@@ -60,10 +74,35 @@ module DMA_ctrl (
     always_ff @(posedge clk) begin
         if (rst) begin
             state <= S_IDLE; widx <= '0; nwords <= '0;
+            input_loaded <= 1'b0;
+            tr_is_store  <= 1'b0;
+            tr_src_sram  <= 1'b0;
+            debug_weight_load_count <= '0;
+            debug_sram_copy_count   <= '0;
+            debug_store_count       <= '0;
         end else begin
             state <= next;
             case (state)
-                S_IDLE: begin widx <= '0; nwords <= dma_size >> 2; end
+                S_IDLE: begin
+                    widx <= '0;
+                    nwords <= dma_size >> 2;
+                    if (dma_valid) begin
+                        tr_is_store <= dma_is_store;
+                        tr_src_sram <= !dma_is_store
+                                    && (dma_dram < `DRAM_WEIGHT_BASE)
+                                    && input_loaded;
+
+                        if (dma_is_store) begin
+                            debug_store_count <= debug_store_count + 16'd1;
+                        end else if (dma_dram >= `DRAM_WEIGHT_BASE) begin
+                            debug_weight_load_count <= debug_weight_load_count + 16'd1;
+                        end else if (!input_loaded) begin
+                            input_loaded <= 1'b1;
+                        end else begin
+                            debug_sram_copy_count <= debug_sram_copy_count + 16'd1;
+                        end
+                    end
+                end
                 S_WR:   widx <= widx + 32'd1;
                 default: ;
             endcase
@@ -78,26 +117,27 @@ module DMA_ctrl (
         sram_en = 1'b0; sram_we = 1'b0; sram_addr  = '0; sram_wdata = '0;
 
         if (state == S_RD) begin
-            if (dma_is_store) begin                       // SRAM -> DRAM: read SRAM
+            if (tr_is_store || tr_src_sram) begin         // SRAM source
                 sram_en   = 1'b1;
-                sram_addr = (dma_sram + (widx << 2));
-            end else begin                                // DRAM -> SRAM: read DRAM
+                sram_addr = (tr_is_store ? dma_sram : dma_dram) + (widx << 2);
+            end else begin                                // DRAM source
                 dram_en   = 1'b1;
                 dram_addr = dma_dram + (widx << 2);
             end
         end else if (state == S_WR) begin
-            if (dma_is_store) begin                       // write DRAM
+            if (tr_is_store) begin                        // write DRAM
                 dram_en    = 1'b1; dram_we = 1'b1;
                 dram_addr  = dma_dram + (widx << 2);
                 dram_wdata = sram_rdata;
             end else begin                                // write SRAM
                 sram_en    = 1'b1; sram_we = 1'b1;
                 sram_addr  = (dma_sram + (widx << 2));
-                sram_wdata = dram_rdata;
+                sram_wdata = tr_src_sram ? sram_rdata : dram_rdata;
             end
         end
     end
 
     assign dma_done = (state == S_DONE);
+    assign debug_input_loaded = input_loaded;
 
 endmodule
