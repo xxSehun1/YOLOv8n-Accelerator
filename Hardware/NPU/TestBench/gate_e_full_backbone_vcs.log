@@ -1,0 +1,225 @@
+-- using compiler-generated Build/npu_program.hex --
+cp ../../../Build/npu_program.hex npu_program.hex
+==== NPU_gate_e_tb full backbone via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps +define+NO_FSDB +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../NPU_ctrl_top.sv ../Control/Decoder.sv ../Control/DMA_ctrl.sv ../Compute/QuantizeUnit.sv ../Compute/ActivationUnit.sv ../Compute/AddUnit.sv ../Compute/PoolCompareUnit.sv ../Compute/ConvMacUnit.sv ../Compute/ConvAddrGen.sv ../Compute/PoolAddrGen.sv ../Compute/AddAddrGen.sv ../Compute/ComputeTop.sv ../Memory/SRAM.sv ../Memory/ICache.sv NPU_gate_e_tb.sv \
+       -top NPU_gate_e_tb -o simv_gate_e_full_backbone
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 13:07:39 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../NPU_ctrl_top.sv'
+Parsing included file '../define.svh'.
+Back to file '../NPU_ctrl_top.sv'.
+Parsing design file '../Control/Decoder.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/Decoder.sv'.
+Parsing design file '../Control/DMA_ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DMA_ctrl.sv'.
+Parsing design file '../Compute/QuantizeUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/QuantizeUnit.sv'.
+Parsing design file '../Compute/ActivationUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ActivationUnit.sv'.
+Parsing design file '../Compute/AddUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/AddUnit.sv'.
+Parsing design file '../Compute/PoolCompareUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/PoolCompareUnit.sv'.
+Parsing design file '../Compute/ConvMacUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ConvMacUnit.sv'.
+Parsing design file '../Compute/ConvAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ConvAddrGen.sv'.
+Parsing design file '../Compute/PoolAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/PoolAddrGen.sv'.
+Parsing design file '../Compute/AddAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/AddAddrGen.sv'.
+Parsing design file '../Compute/ComputeTop.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ComputeTop.sv'.
+Parsing design file '../Memory/SRAM.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/SRAM.sv'.
+Parsing design file '../Memory/ICache.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/ICache.sv'.
+Parsing design file 'NPU_gate_e_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'NPU_gate_e_tb.sv'.
+Top Level Modules:
+       NPU_gate_e_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+2 modules and 0 UDP read.
+recompiling module NPU_gate_e_tb
+	However, due to incremental compilation, only 1 module needs to be compiled. 
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_gate_e_full_backbone ]; then chmod a-x ../simv_gate_e_full_backbone; fi
+g++  -o ../simv_gate_e_full_backbone      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_gate_e_full_backbone.daidir -Wl,-rpath=./simv_gate_e_full_backbone.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3206401_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+../simv_gate_e_full_backbone up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .345 seconds to compile + .154 seconds to elab + .165 seconds to link
+./simv_gate_e_full_backbone
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 13:07 2026
+[TB] loaded 1228800 input bytes
+[TB] loaded 1277680 weight bytes
+[TB] loaded 409600 golden P3 bytes
+[TB] loaded 204800 golden P4 bytes
+[TB] loaded 102400 golden P5 bytes
+== NPU_gate_e_tb: full YOLOv8n backbone Gate E ==
+Requires full Build/npu_program.hex copied to simulation cwd.
+[TB] start pulsed at 105000
+[DECODE pc=0] opcode=DMA_LD  
+[EXEC_ACCEPT 1][pc=3] CONV H=640 W=640 IC=3 OC=16 out=0x0012c000
+[COMPUTE_DONE pc=3] CONV total=0x00190000 out=0x0012c000
+[EXEC_ACCEPT 2][pc=6] CONV H=320 W=320 IC=16 OC=32 out=0x00000000
+[COMPUTE_DONE pc=6] CONV total=0x000c8000 out=0x00000000
+[EXEC_ACCEPT 3][pc=9] CONV H=160 W=160 IC=32 OC=32 out=0x000c8000
+[COMPUTE_DONE pc=9] CONV total=0x000c8000 out=0x000c8000
+[EXEC_ACCEPT 4][pc=12] CONV H=160 W=160 IC=16 OC=16 out=0x00000000
+[COMPUTE_DONE pc=12] CONV total=0x00064000 out=0x00000000
+[EXEC_ACCEPT 5][pc=15] CONV H=160 W=160 IC=16 OC=16 out=0x00064000
+[COMPUTE_DONE pc=15] CONV total=0x00064000 out=0x00064000
+[DECODE pc=16] opcode=ADDCFG  
+[EXEC_ACCEPT 6][pc=18] ADD H=160 W=160 IC=16 OC=16 out=0x00000000
+[COMPUTE_DONE pc=18] ADD total=0x00064000 out=0x00000000
+[DMA_ST 1][pc=19] dram=0x00200000 sram=0x000c8000 size=0x000c8000
+[DMA_ST 2][pc=20] dram=0x002c8000 sram=0x00000000 size=0x00064000
+[EXEC_ACCEPT 7][pc=26] CONV H=160 W=160 IC=48 OC=32 out=0x00000000
+[COMPUTE_DONE pc=26] CONV total=0x000c8000 out=0x00000000
+[EXEC_ACCEPT 8][pc=29] CONV H=160 W=160 IC=32 OC=64 out=0x000c8000
+[COMPUTE_DONE pc=29] CONV total=0x00064000 out=0x000c8000
+[DECODE pc=32] opcode=CONV    
+[EXEC_ACCEPT 9][pc=32] CONV H=80 W=80 IC=64 OC=64 out=0x00000000
+[COMPUTE_DONE pc=32] CONV total=0x00064000 out=0x00000000
+[EXEC_ACCEPT 10][pc=35] CONV H=80 W=80 IC=32 OC=32 out=0x00064000
+[COMPUTE_DONE pc=35] CONV total=0x00032000 out=0x00064000
+[EXEC_ACCEPT 11][pc=38] CONV H=80 W=80 IC=32 OC=32 out=0x00096000
+[COMPUTE_DONE pc=38] CONV total=0x00032000 out=0x00096000
+[EXEC_ACCEPT 12][pc=41] ADD H=80 W=80 IC=32 OC=32 out=0x00064000
+[COMPUTE_DONE pc=41] ADD total=0x00032000 out=0x00064000
+[EXEC_ACCEPT 13][pc=44] CONV H=80 W=80 IC=32 OC=32 out=0x00096000
+[COMPUTE_DONE pc=44] CONV total=0x00032000 out=0x00096000
+[EXEC_ACCEPT 14][pc=47] CONV H=80 W=80 IC=32 OC=32 out=0x000c8000
+[COMPUTE_DONE pc=47] CONV total=0x00032000 out=0x000c8000
+[DECODE pc=48] opcode=ADDCFG  
+[EXEC_ACCEPT 15][pc=50] ADD H=80 W=80 IC=32 OC=32 out=0x00096000
+[COMPUTE_DONE pc=50] ADD total=0x00032000 out=0x00096000
+[DMA_ST 3][pc=51] dram=0x0032c000 sram=0x00000000 size=0x00064000
+[DMA_ST 4][pc=52] dram=0x00390000 sram=0x00064000 size=0x00032000
+[DMA_ST 5][pc=53] dram=0x003c2000 sram=0x00096000 size=0x00032000
+[EXEC_ACCEPT 16][pc=60] CONV H=80 W=80 IC=128 OC=64 out=0x00000000
+[COMPUTE_DONE pc=60] CONV total=0x00064000 out=0x00000000
+[EXEC_ACCEPT 17][pc=63] CONV H=80 W=80 IC=64 OC=128 out=0x00064000
+[COMPUTE_DONE pc=63] CONV total=0x00032000 out=0x00064000
+[DECODE pc=64] opcode=DMA_ST  
+[DMA_ST 6][pc=64] dram=0x003f4000 sram=0x00000000 size=0x00064000
+[EXEC_ACCEPT 18][pc=67] CONV H=40 W=40 IC=128 OC=128 out=0x00000000
+[COMPUTE_DONE pc=67] CONV total=0x00032000 out=0x00000000
+[EXEC_ACCEPT 19][pc=70] CONV H=40 W=40 IC=64 OC=64 out=0x00032000
+[COMPUTE_DONE pc=70] CONV total=0x00019000 out=0x00032000
+[EXEC_ACCEPT 20][pc=73] CONV H=40 W=40 IC=64 OC=64 out=0x0004b000
+[COMPUTE_DONE pc=73] CONV total=0x00019000 out=0x0004b000
+[EXEC_ACCEPT 21][pc=76] ADD H=40 W=40 IC=64 OC=64 out=0x00032000
+[COMPUTE_DONE pc=76] ADD total=0x00019000 out=0x00032000
+[EXEC_ACCEPT 22][pc=79] CONV H=40 W=40 IC=64 OC=64 out=0x0004b000
+[COMPUTE_DONE pc=79] CONV total=0x00019000 out=0x0004b000
+[DECODE pc=80] opcode=DMA_LD  
+[EXEC_ACCEPT 23][pc=82] CONV H=40 W=40 IC=64 OC=64 out=0x00064000
+[COMPUTE_DONE pc=82] CONV total=0x00019000 out=0x00064000
+[EXEC_ACCEPT 24][pc=85] ADD H=40 W=40 IC=64 OC=64 out=0x0004b000
+[COMPUTE_DONE pc=85] ADD total=0x00019000 out=0x0004b000
+[DMA_ST 7][pc=86] dram=0x00458000 sram=0x00000000 size=0x00032000
+[DMA_ST 8][pc=87] dram=0x0048a000 sram=0x00032000 size=0x00019000
+[DMA_ST 9][pc=88] dram=0x004a3000 sram=0x0004b000 size=0x00019000
+[EXEC_ACCEPT 25][pc=95] CONV H=40 W=40 IC=256 OC=128 out=0x00000000
+[COMPUTE_DONE pc=95] CONV total=0x00032000 out=0x00000000
+[DECODE pc=96] opcode=DMA_LD  
+[EXEC_ACCEPT 26][pc=98] CONV H=40 W=40 IC=128 OC=256 out=0x00032000
+[COMPUTE_DONE pc=98] CONV total=0x00019000 out=0x00032000
+[DMA_ST 10][pc=99] dram=0x004bc000 sram=0x00000000 size=0x00032000
+[EXEC_ACCEPT 27][pc=102] CONV H=20 W=20 IC=256 OC=256 out=0x00000000
+[COMPUTE_DONE pc=102] CONV total=0x00019000 out=0x00000000
+[EXEC_ACCEPT 28][pc=105] CONV H=20 W=20 IC=128 OC=128 out=0x00019000
+[COMPUTE_DONE pc=105] CONV total=0x0000c800 out=0x00019000
+[EXEC_ACCEPT 29][pc=108] CONV H=20 W=20 IC=128 OC=128 out=0x00025800
+[COMPUTE_DONE pc=108] CONV total=0x0000c800 out=0x00025800
+[EXEC_ACCEPT 30][pc=111] ADD H=20 W=20 IC=128 OC=128 out=0x00019000
+[COMPUTE_DONE pc=111] ADD total=0x0000c800 out=0x00019000
+[DECODE pc=112] opcode=DMA_ST  
+[DMA_ST 11][pc=112] dram=0x004ee000 sram=0x00000000 size=0x00019000
+[DMA_ST 12][pc=113] dram=0x00507000 sram=0x00019000 size=0x0000c800
+[EXEC_ACCEPT 31][pc=119] CONV H=20 W=20 IC=384 OC=256 out=0x00000000
+[COMPUTE_DONE pc=119] CONV total=0x00019000 out=0x00000000
+[EXEC_ACCEPT 32][pc=122] CONV H=20 W=20 IC=256 OC=128 out=0x00019000
+[COMPUTE_DONE pc=122] CONV total=0x0000c800 out=0x00019000
+[EXEC_ACCEPT 33][pc=124] POOL H=20 W=20 IC=128 OC=128 out=0x00000000
+[COMPUTE_DONE pc=124] POOL total=0x0000c800 out=0x00000000
+[EXEC_ACCEPT 34][pc=126] POOL H=20 W=20 IC=128 OC=128 out=0x0000c800
+[COMPUTE_DONE pc=126] POOL total=0x0000c800 out=0x0000c800
+[DECODE pc=128] opcode=POOL    
+[EXEC_ACCEPT 35][pc=128] POOL H=20 W=20 IC=128 OC=128 out=0x00025800
+[COMPUTE_DONE pc=128] POOL total=0x0000c800 out=0x00025800
+[DMA_ST 13][pc=129] dram=0x00513800 sram=0x00019000 size=0x0000c800
+[DMA_ST 14][pc=130] dram=0x00520000 sram=0x00000000 size=0x0000c800
+[DMA_ST 15][pc=131] dram=0x0052c800 sram=0x0000c800 size=0x0000c800
+[DMA_ST 16][pc=132] dram=0x00539000 sram=0x00025800 size=0x0000c800
+[EXEC_ACCEPT 36][pc=139] CONV H=20 W=20 IC=512 OC=256 out=0x00000000
+[COMPUTE_DONE pc=139] CONV total=0x00019000 out=0x00000000
+[DMA_ST 17][pc=140] dram=0x00545800 sram=0x00000000 size=0x00019000
+[DECODE pc=141] opcode=HALT    
+[TB] HALT observed at 16167545325000
+== Gate E checkpoints ==
+  PASS: HALT reached
+  PASS: PC parked at HALT instruction
+  PASS: decoded every instruction including HALT
+  PASS: EXEC count matches generated ISA
+  PASS: CONV count matches generated ISA
+  PASS: POOL count matches generated ISA
+  PASS: ADD count matches generated ISA
+  PASS: DMA_LD count matches generated ISA
+  PASS: DMA_ST count matches generated ISA
+  PASS: weight DMA_LD count matches generated ISA
+  PASS: DMA_ST debug count matches generated ISA
+  PASS: no overloaded SRAM-copy DMA_LD was used
+  PASS: input DMA_LD was observed
+  PASS: P3 final DMA_ST observed
+  PASS: P4 final DMA_ST observed
+  PASS: P5 final DMA_ST observed
+  PASS: P3/P4/P5 combined mismatch_count is exactly 0
+== NPU_gate_e_tb GATE E PASS ==
+$finish called from file "NPU_gate_e_tb.sv", line 429.
+$finish at simulation time       16167545325000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 16167545325000 ps
+CPU Time:    902.220 seconds;       Data structure size:  10.2Mb
+Mon Jun  1 13:22:44 2026

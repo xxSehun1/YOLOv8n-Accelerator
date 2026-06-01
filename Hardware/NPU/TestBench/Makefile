@@ -18,12 +18,15 @@
 VFLAGS := --binary --timing -j 16 -Wno-fatal
 VCS ?= vcs
 VCS_FLAGS := -sverilog -full64 -timescale=1ns/1ps -debug_access+all
+VCS_FAST_FLAGS := -sverilog -full64 -timescale=1ns/1ps +define+NO_FSDB
+VCS_FULL_FLAGS := -sverilog -full64 -timescale=1ns/1ps +define+NO_FSDB +define+GATEC_FULL
 XRUN ?= xrun
 XRUN_FLAGS := -64bit -sv -timescale 1ns/1ps
 
 VINCS := +incdir+.. \
          +incdir+../Control \
          +incdir+../Buffer \
+         +incdir+../Compute \
          +incdir+../Memory \
          +incdir+../PE_Array \
          +incdir+../PE_Array/GIN \
@@ -41,12 +44,22 @@ TOP_SRCS := ../NPU_top.sv \
             ../PE_Array/PE_array.sv \
             ../PPU/PPU.sv ../PPU/PSUM_acc.sv ../PPU/Add_Qint8.sv
 
+COMPUTE_SRCS := ../Compute/QuantizeUnit.sv \
+                ../Compute/ActivationUnit.sv \
+                ../Compute/AddUnit.sv \
+                ../Compute/PoolCompareUnit.sv \
+                ../Compute/ConvMacUnit.sv \
+                ../Compute/ConvAddrGen.sv \
+                ../Compute/PoolAddrGen.sv \
+                ../Compute/AddAddrGen.sv \
+                ../Compute/ComputeTop.sv
+
 CTRL_SRCS := ../NPU_ctrl_top.sv \
              ../Control/Decoder.sv ../Control/DMA_ctrl.sv \
-             ../Control/DummyExec.sv \
+             $(COMPUTE_SRCS) \
              ../Memory/SRAM.sv ../Memory/ICache.sv
 
-.PHONY: all pe array config weight iomap opsum top sim_top ctrl_full ctrl_full_vcs ctrl_full_xrun use_build_program clean help
+.PHONY: all pe array config weight iomap opsum top sim_top ctrl_full primitive_units_vcs quantize_unit_vcs activation_unit_vcs add_unit_vcs pool_compare_unit_vcs conv_mac_unit_vcs decoder_opcode_vcs dma_ctrl_unit_vcs first_conv_vcs first_conv_vcs_fsdb gate_c_first_conv_vcs gate_c_first_conv_full_vcs gate_d_first_add_vcs gate_d_sppf_vcs gate_e_full_backbone_vcs ctrl_full_vcs ctrl_full_vcs_fsdb ctrl_full_xrun use_build_program clean help
 
 all: pe array config weight iomap opsum
 	@echo
@@ -115,24 +128,131 @@ sim_top: shared_config.hex npu_program.hex
 	./obj_top/VNPU_top_tb
 
 # Control/ISA/data-exchange simulation against the compiler-generated program.
-# This uses NPU_ctrl_top, where the compute subsystem is dummied but Decoder,
-# DMA, SRAM, ICache, and DRAM traffic are real.
+# This uses NPU_ctrl_top with the real sequential ComputeTop.
 ctrl_full: use_build_program
-	@echo "==== NPU_ctrl_top_tb (generated ISA, dummy compute) ===="
+	@echo "==== NPU_ctrl_top_tb (generated ISA, real sequential compute) ===="
 	verilator $(VFLAGS) -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-PINMISSING \
 	          $(VINCS) --Mdir obj_ctrl_full \
 	          $(CTRL_SRCS) NPU_ctrl_top_tb.sv --top-module NPU_ctrl_top_tb
 	./obj_ctrl_full/VNPU_ctrl_top_tb
 
+primitive_units_vcs: quantize_unit_vcs activation_unit_vcs add_unit_vcs pool_compare_unit_vcs conv_mac_unit_vcs
+	@echo "==== Primitive compute unit VCS regression PASS ===="
+
+quantize_unit_vcs:
+	@echo "==== QuantizeUnit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Compute/QuantizeUnit.sv QuantizeUnit_tb.sv \
+	       -top QuantizeUnit_tb -o simv_quantize_unit
+	./simv_quantize_unit
+
+activation_unit_vcs:
+	@echo "==== ActivationUnit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Compute/ActivationUnit.sv ActivationUnit_tb.sv \
+	       -top ActivationUnit_tb -o simv_activation_unit
+	./simv_activation_unit
+
+add_unit_vcs:
+	@echo "==== AddUnit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Compute/AddUnit.sv AddUnit_tb.sv \
+	       -top AddUnit_tb -o simv_add_unit
+	./simv_add_unit
+
+pool_compare_unit_vcs:
+	@echo "==== PoolCompareUnit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Compute/PoolCompareUnit.sv PoolCompareUnit_tb.sv \
+	       -top PoolCompareUnit_tb -o simv_pool_compare_unit
+	./simv_pool_compare_unit
+
+conv_mac_unit_vcs:
+	@echo "==== ConvMacUnit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Compute/ConvMacUnit.sv ConvMacUnit_tb.sv \
+	       -top ConvMacUnit_tb -o simv_conv_mac_unit
+	./simv_conv_mac_unit
+
+decoder_opcode_vcs:
+	@echo "==== Decoder_opcode_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Control/Decoder.sv Decoder_opcode_tb.sv \
+	       -top Decoder_opcode_tb -o simv_decoder_opcode
+	./simv_decoder_opcode
+
+dma_ctrl_unit_vcs:
+	@echo "==== DMA_ctrl_unit_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       ../Control/DMA_ctrl.sv DMA_ctrl_unit_tb.sv \
+	       -top DMA_ctrl_unit_tb -o simv_dma_ctrl_unit
+	./simv_dma_ctrl_unit
+
+first_conv_vcs: use_build_program
+	@echo "==== NPU_first_conv_tb via VCS ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_first_conv_tb.sv \
+	       -top NPU_first_conv_tb -o simv_first_conv
+	./simv_first_conv
+
+gate_c_first_conv_vcs: use_gatec_tiny_program
+	@echo "==== NPU_first_conv_tb Gate C via VCS (fast no-debug build) ===="
+	$(VCS) $(VCS_FAST_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_first_conv_tb.sv \
+	       -top NPU_first_conv_tb -o simv_gate_c_first_conv
+	./simv_gate_c_first_conv
+
+gate_c_first_conv_full_vcs: use_gatec_full_program
+	@echo "==== NPU_first_conv_tb Gate C FULL 640x640 via VCS (fast no-debug build) ===="
+	$(VCS) $(VCS_FULL_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_first_conv_tb.sv \
+	       -top NPU_first_conv_tb -o simv_gate_c_first_conv_full
+	./simv_gate_c_first_conv_full
+
+gate_d_first_add_vcs: use_gated_first_add_program
+	@echo "==== NPU_gate_d_tb first residual ADD via VCS ===="
+	$(VCS) $(VCS_FAST_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_gate_d_tb.sv \
+	       -top NPU_gate_d_tb -o simv_gate_d_first_add
+	./simv_gate_d_first_add
+
+gate_d_sppf_vcs: use_gated_sppf_program
+	@echo "==== NPU_gate_d_tb SPPF via VCS ===="
+	$(VCS) $(VCS_FAST_FLAGS) +define+GATED_SPPF $(VINCS) \
+	       $(CTRL_SRCS) NPU_gate_d_tb.sv \
+	       -top NPU_gate_d_tb -o simv_gate_d_sppf
+	./simv_gate_d_sppf
+
+gate_e_full_backbone_vcs: use_build_program
+	@echo "==== NPU_gate_e_tb full backbone via VCS ===="
+	$(VCS) $(VCS_FAST_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_gate_e_tb.sv \
+	       -top NPU_gate_e_tb -o simv_gate_e_full_backbone
+	./simv_gate_e_full_backbone
+
+first_conv_vcs_fsdb: use_build_program
+	@echo "==== NPU_first_conv_tb via VCS + FSDB ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_first_conv_tb.sv \
+	       -top NPU_first_conv_tb -o simv_first_conv_fsdb
+	./simv_first_conv_fsdb +FSDB
+
 ctrl_full_vcs: use_build_program
-	@echo "==== NPU_ctrl_top_tb via VCS (generated ISA, dummy compute) ===="
+	@echo "==== NPU_ctrl_top_tb via VCS (generated ISA, real sequential compute) ===="
 	$(VCS) $(VCS_FLAGS) $(VINCS) \
 	       $(CTRL_SRCS) NPU_ctrl_top_tb.sv \
 	       -top NPU_ctrl_top_tb -o simv_ctrl_full
 	./simv_ctrl_full
 
+ctrl_full_vcs_fsdb: use_build_program
+	@echo "==== NPU_ctrl_top_tb via VCS + FSDB ===="
+	$(VCS) $(VCS_FLAGS) $(VINCS) \
+	       $(CTRL_SRCS) NPU_ctrl_top_tb.sv \
+	       -top NPU_ctrl_top_tb -o simv_ctrl_full_fsdb
+	./simv_ctrl_full_fsdb +FSDB
+
 ctrl_full_xrun: use_build_program
-	@echo "==== NPU_ctrl_top_tb via xrun (generated ISA, dummy compute) ===="
+	@echo "==== NPU_ctrl_top_tb via xrun (generated ISA, real sequential compute) ===="
 	$(XRUN) $(XRUN_FLAGS) $(VINCS) \
 	        $(CTRL_SRCS) NPU_ctrl_top_tb.sv \
 	        -top NPU_ctrl_top_tb
@@ -152,9 +272,40 @@ use_build_program:
 	@echo "-- using compiler-generated Build/npu_program.hex --"
 	cp ../../../Build/npu_program.hex npu_program.hex
 
+use_gatec_tiny_program:
+	@echo "-- using Gate C tiny first-conv program --"
+	cp ../../../Build/npu_program_gatec_tiny.hex npu_program.hex
+
+use_gatec_full_program:
+	@echo "-- using Gate C full first-conv program --"
+	cp ../../../Build/npu_program_gatec_full.hex npu_program.hex
+
+use_gated_first_add_program:
+	@echo "-- using Gate D first residual ADD program --"
+	cp ../../../Build/npu_program_gate_d_first_add.hex npu_program.hex
+
+use_gated_sppf_program:
+	@echo "-- using Gate D SPPF block program --"
+	cp ../../../Build/npu_program_gate_d_sppf.hex npu_program.hex
+
 clean:
 	rm -rf obj_pe obj_array obj_config obj_weight obj_iomap obj_opsum obj_top \
 	       obj_ctrl_full simv_ctrl_full simv_ctrl_full.daidir \
+	       simv_quantize_unit simv_quantize_unit.daidir \
+	       simv_activation_unit simv_activation_unit.daidir \
+	       simv_add_unit simv_add_unit.daidir \
+	       simv_pool_compare_unit simv_pool_compare_unit.daidir \
+	       simv_conv_mac_unit simv_conv_mac_unit.daidir \
+	       simv_decoder_opcode simv_decoder_opcode.daidir \
+	       simv_dma_ctrl_unit simv_dma_ctrl_unit.daidir \
+	       simv_first_conv simv_first_conv.daidir \
+	       simv_gate_c_first_conv simv_gate_c_first_conv.daidir \
+	       simv_gate_c_first_conv_full simv_gate_c_first_conv_full.daidir \
+	       simv_gate_d_first_add simv_gate_d_first_add.daidir \
+	       simv_gate_d_sppf simv_gate_d_sppf.daidir \
+	       simv_gate_e_full_backbone simv_gate_e_full_backbone.daidir \
+	       simv_first_conv_fsdb simv_first_conv_fsdb.daidir npu_first_conv.fsdb \
+	       simv_ctrl_full_fsdb simv_ctrl_full_fsdb.daidir npu_ctrl_top.fsdb \
 	       xcelium.d xrun.history xrun.log csrc ucli.key \
 	       shared_config.hex npu_program.hex
 
@@ -162,6 +313,7 @@ help:
 	@echo "Targets:"
 	@echo "  Unit tests : pe array config weight iomap opsum"
 	@echo "  Integration: top (lint) sim_top (run)"
-	@echo "  Control sim: ctrl_full (Verilator) ctrl_full_vcs (VCS) ctrl_full_xrun (xrun)"
+	@echo "  Compute    : primitive_units_vcs quantize_unit_vcs activation_unit_vcs add_unit_vcs pool_compare_unit_vcs conv_mac_unit_vcs gate_c_first_conv_vcs gate_c_first_conv_full_vcs gate_d_first_add_vcs gate_d_sppf_vcs gate_e_full_backbone_vcs"
+	@echo "  Control sim: ctrl_full (Verilator) decoder_opcode_vcs (VCS) dma_ctrl_unit_vcs (VCS) first_conv_vcs (VCS) first_conv_vcs_fsdb (VCS+FSDB) ctrl_full_vcs (VCS) ctrl_full_vcs_fsdb (VCS+FSDB) ctrl_full_xrun (xrun)"
 	@echo "  Generated  : shared_config.hex npu_program.hex"
 	@echo "  Utility    : all clean help"

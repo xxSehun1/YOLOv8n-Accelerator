@@ -61,6 +61,7 @@ class NPUFullProgramEmitter:
         self.pc_counter    = 0
         self.memory_map    = {}                       # relay node -> SRAM address
         self.buffers       = {}                       # producer -> (sram_addr, size)
+        self.dram_map      = {}                       # producer -> DRAM address (spilled)
         self.fmap_alloc    = PoolAllocator(SRAM_ACT_BASE, SRAM_ACT_SIZE, "SRAM activation")
         self.weight_alloc  = BumpAllocator(DRAM_WEIGHT_BASE, DRAM_WEIGHT_SIZE, "DRAM weight")
         self.output_alloc  = BumpAllocator(DRAM_OUTPUT_BASE, DRAM_OUTPUT_SIZE, "DRAM output")
@@ -303,6 +304,7 @@ class NPUFullProgramEmitter:
                     dram = self.output_alloc.alloc(s)
                     self._inst(f"OP:DMA_ST | DRAM:0x{dram:08X} | "
                                f"SRAM:0x{a:08X} | SIZE:0x{s:08X}")
+                    self.dram_map[prod] = dram          # record DRAM address for concat reuse
                     self.fmap_alloc.release(a, s)
 
     # Per-operation emitters.
@@ -408,9 +410,72 @@ class NPUFullProgramEmitter:
                    f"OUT:0x{out_sram:08X} | FLAGS:0x{flags:X} | "
                    f"STRIDE:1 | PAD:0 | KERNEL:1")
 
+    def _find_producer(self, node):
+        """Walk through transparent / structural ops to find the buffer owner.
+
+        Returns the relay node whose output was allocated in self.buffers (i.e.
+        the underlying CONV / ADD / POOL call that produced the data), so that
+        split slices and passthrough wrappers all map back to the same owner.
+        """
+        if node in self.dram_map or node in self.buffers:
+            return node
+        if isinstance(node, relay.TupleGetItem):
+            return self._find_producer(node.tuple_value)
+        if isinstance(node, relay.Call) and node.args \
+                and node.op.name in _TRANSPARENT:
+            return self._find_producer(node.args[0])
+        # split is not in _TRANSPARENT but its children are TupleGetItems —
+        # recurse through it so both halves trace back to the pre-split conv.
+        if isinstance(node, relay.Call) and node.op.name == "split" and node.args:
+            return self._find_producer(node.args[0])
+        return node
+
+    def _get_or_spill_dram(self, f):
+        """Ensure the producer underlying field *f* has been fully spilled to DRAM.
+
+        Spills the COMPLETE producer buffer (not just the slice) so that every
+        channel-slice of a split/strided_slice parent lands in DRAM contiguously.
+        Returns the DRAM byte address at which *f*'s data starts
+        (= producer_dram_base + byte_offset_of_slice_within_producer).
+
+        Only emits a DMA_ST if the producer has not been spilled yet; subsequent
+        slices of the same parent reuse the existing DRAM copy.
+        """
+        sram_src  = self._resolve(f)
+        prod      = self._find_producer(f)
+        sram_base = self.memory_map.get(prod, sram_src)
+        byte_off  = sram_src - sram_base          # slice offset within producer
+
+        if prod not in self.dram_map:
+            # Spill the FULL producer buffer so all slices are covered.
+            if prod in self.buffers:
+                full_sram, full_size = self.buffers[prod]
+            else:
+                # Fallback for nodes not in buffers (e.g. input params).
+                full_sram, full_size = sram_base, (abs(byte_off) + _chw(
+                    get_tensor_shape(f.checked_type))[0] *
+                    _chw(get_tensor_shape(f.checked_type))[1] *
+                    _chw(get_tensor_shape(f.checked_type))[2])
+            dram_base = self.output_alloc.alloc(full_size)
+            self._inst(f"OP:DMA_ST | DRAM:0x{dram_base:08X} | "
+                       f"SRAM:0x{full_sram:08X} | SIZE:0x{full_size:08X}")
+            self.dram_map[prod] = dram_base
+
+        return self.dram_map[prod] + byte_off
+
     def _emit_concat(self, call, flags):
-        """Concatenation realised as SRAM-to-SRAM block moves: each input is
-        copied into its channel slice of the output (NCHW => contiguous)."""
+        """Concatenation: gather all inputs into a contiguous SRAM output buffer.
+
+        Because the NPU DMA only transfers between DRAM and SRAM (no
+        SRAM-to-SRAM path), two passes are required:
+
+        Pass 1 — spill:  for every input not yet in DRAM, emit DMA_ST for the
+                         FULL producer buffer (so all slices of a split parent
+                         land contiguously in DRAM).
+        Pass 2 — load:   emit DMA_LD for each slice into its output slot.
+
+        All DMA_STs are emitted before any DMA_LD, eliminating any
+        load-before-store hazard even when multiple fields share a parent."""
         tup    = call.args[0]
         fields = list(tup.fields) if isinstance(tup, relay.Tuple) else [tup]
         out_c, out_h, out_w = _chw(get_tensor_shape(call.checked_type))
@@ -420,12 +485,20 @@ class NPUFullProgramEmitter:
         self.memory_map[call] = out_sram
         self.buffers[call]    = (out_sram, out_size)
 
-        cur = out_sram
+        # Pass 1: spill all producers to DRAM (all DMA_STs before any DMA_LD).
+        dram_srcs = []
+        sizes     = []
         for f in fields:
-            c, h, w = _chw(get_tensor_shape(f.checked_type))
-            src     = self._resolve(f)
-            size    = c * h * w
-            self._inst(f"OP:DMA_LD | DRAM:0x{src:08X} | SRAM:0x{cur:08X} | "
+            c, h, w  = _chw(get_tensor_shape(f.checked_type))
+            size     = c * h * w
+            src_dram = self._get_or_spill_dram(f)
+            dram_srcs.append(src_dram)
+            sizes.append(size)
+
+        # Pass 2: load each field from DRAM into its contiguous output slot.
+        cur = out_sram
+        for src_dram, size in zip(dram_srcs, sizes):
+            self._inst(f"OP:DMA_LD | DRAM:0x{src_dram:08X} | SRAM:0x{cur:08X} | "
                        f"SIZE:0x{size:08X}")
             cur += size
 

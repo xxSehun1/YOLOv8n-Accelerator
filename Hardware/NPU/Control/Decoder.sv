@@ -142,7 +142,11 @@ module Decoder (
                             r_sram     <= `DMA_SRAM(instr);
                             r_size     <= `DMA_SIZE(instr);
                         end
-                        default: ;
+                        `OP_HALT: begin
+                        end
+                        default: begin
+                            pc <= pc + 16'd1;
+                        end
                     endcase
                 end
                 S_EXEC: if (exec_done) pc <= pc + 16'd1;
@@ -179,5 +183,29 @@ module Decoder (
     assign dma_dram     = r_dram;
     assign dma_sram     = r_sram;
     assign dma_size     = r_size;
+
+`ifndef SYNTHESIS
+    property dma_command_stable_until_done;
+        @(posedge clk) disable iff (rst)
+            dma_valid && !dma_done |=> dma_valid
+                && $stable({dma_is_store, dma_dram, dma_sram, dma_size});
+    endproperty
+
+    property exec_command_stable_until_done;
+        @(posedge clk) disable iff (rst)
+            exec_valid && !exec_done |=> exec_valid
+                && $stable({exec_op, exec_in_h, exec_in_w, exec_in_c, exec_out_c,
+                            exec_in_addr, exec_wgt_addr, exec_out_addr,
+                            exec_flags, exec_stride, exec_pad, exec_kernel,
+                            exec_pconfig, exec_shift,
+                            exec_lhs_shift, exec_rhs_shift});
+    endproperty
+
+    assert property (dma_command_stable_until_done)
+        else $error("Decoder DMA command changed before dma_done");
+
+    assert property (exec_command_stable_until_done)
+        else $error("Decoder EXEC command changed before exec_done");
+`endif
 
 endmodule

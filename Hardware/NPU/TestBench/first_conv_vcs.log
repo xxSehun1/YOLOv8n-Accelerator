@@ -1,0 +1,103 @@
+-- using compiler-generated Build/npu_program.hex --
+cp ../../../Build/npu_program.hex npu_program.hex
+==== NPU_first_conv_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../NPU_ctrl_top.sv ../Control/Decoder.sv ../Control/DMA_ctrl.sv ../Control/DummyExec.sv ../Memory/SRAM.sv ../Memory/ICache.sv NPU_first_conv_tb.sv \
+       -top NPU_first_conv_tb -o simv_first_conv
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Sun May 31 19:34:03 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../NPU_ctrl_top.sv'
+Parsing included file '../define.svh'.
+Back to file '../NPU_ctrl_top.sv'.
+Parsing design file '../Control/Decoder.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/Decoder.sv'.
+Parsing design file '../Control/DMA_ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DMA_ctrl.sv'.
+Parsing design file '../Control/DummyExec.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DummyExec.sv'.
+Parsing design file '../Memory/SRAM.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/SRAM.sv'.
+Parsing design file '../Memory/ICache.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/ICache.sv'.
+Parsing design file 'NPU_first_conv_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'NPU_first_conv_tb.sv'.
+Top Level Modules:
+       NPU_first_conv_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module NPU_first_conv_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_first_conv ]; then chmod a-x ../simv_first_conv; fi
+g++  -o ../simv_first_conv      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_first_conv.daidir -Wl,-rpath=./simv_first_conv.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _2250305_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_first_conv up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .356 seconds to compile + .207 seconds to elab + .203 seconds to link
+./simv_first_conv
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  May 31 19:34 2026
+[TB] loaded 1277680 weight bytes
+== NPU_first_conv_tb: first CONV layer data/control check ==
+[TB] start pulsed at 105000
+[DECODE pc=0] DMA_LD dram=0x00000000 sram=0x00000000 size=0x0012c000
+[DMA][pc=0]  DMA_LD DRAM_INPUT->SRAM dram=0x00000000 sram=0x00000000 size=0x0012c000
+[DECODE pc=1] DMA_LD dram=0x01000000 sram=0x00380000 size=0x000001f0
+[DMA][pc=1] DMA_LD DRAM_WEIGHT->SRAM dram=0x01000000 sram=0x00380000 size=0x000001f0
+[DECODE pc=2] CONFIG H=640 W=640 IC=3 OC=16 stride=2 pcfg=0x07e shift=0x0a
+[DECODE pc=3] CONV in=0x00000000 wgt=0x00380000 out=0x0012c000 flags=0x00b stride=2 pad=1 kernel=3 uses_cfg(H=640 W=640 IC=3 OC=16 pcfg=0x07e shift=0x0a)
+[EXEC_ACCEPT][pc=3] first CONV out=0x0012c000 H=640 W=640 OC=16 stride=2 pad=1 kernel=3
+[EXEC_DONE][pc=3] first CONV dummy output complete
+[TB] first CONV completed at 10242725000
+== First CONV checkpoints ==
+  PASS: exactly one EXEC op completed
+  PASS: debug opcode alias checked through first CONV
+  PASS: first EXEC was CONV
+  PASS: no POOL executed
+  PASS: no ADD executed
+  PASS: input DMA_LD was observed
+  PASS: one weight DMA_LD was observed
+  PASS: no DMA_ST before first CONV completes
+  PASS: input first word copied DRAM->SRAM
+  PASS: input last word copied DRAM->SRAM
+  PASS: weight first word copied DRAM->SRAM
+  PASS: weight last word copied DRAM->SRAM
+  PASS: first CONV dummy output first word matched
+  PASS: first CONV dummy output last word matched
+== NPU_first_conv_tb PASS ==
+$finish called from file "NPU_first_conv_tb.sv", line 303.
+$finish at simulation time          10242725000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 10242725000 ps
+CPU Time:      1.260 seconds;       Data structure size:   6.5Mb
+Sun May 31 19:34:06 2026

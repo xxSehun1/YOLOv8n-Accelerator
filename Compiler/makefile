@@ -1,14 +1,29 @@
 
+PYTHON ?= python3
+TEST_DATA_ROOT_PATH ?= /tmp/tvm_test_data
+
 
 run: 
-	python main.py
-	python gen_shared_hex.py
+	$(PYTHON) main.py
+	$(PYTHON) gen_shared_hex.py
 
 sim:
-	python npu_iss.py
+	$(PYTHON) npu_iss.py
 
 valid:
-	python validation.py
+	TEST_DATA_ROOT_PATH=$(TEST_DATA_ROOT_PATH) $(PYTHON) validation.py
+
+phase0:
+	$(PYTHON) phase0_audit.py
+
+phase0-strict:
+	$(PYTHON) phase0_audit.py --strict
+
+gatec-vectors:
+	$(PYTHON) generate_gatec_vectors.py
+
+gated-vectors:
+	$(PYTHON) generate_gate_d_vectors.py
 
 clean:
 	rm -f	../Build/full_instructions.txt \

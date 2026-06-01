@@ -1,7 +1,30 @@
 
 
 # Build output directory
-/Build/
+/Build/*
+!/Build/full_instructions.txt
+!/Build/npu_program.hex
+!/Build/weights.bin
+!/Build/mapping.txt
+!/Build/golden_contract.md
+!/Build/golden_p3.bin
+!/Build/golden_p4.bin
+!/Build/golden_p5.bin
+!/Build/input_seed0.bin
+!/Build/golden_l0_conv.bin
+!/Build/input_tiny16_seed0.bin
+!/Build/golden_l0_tiny16_conv.bin
+!/Build/full_instructions_gatec_tiny.txt
+!/Build/npu_program_gatec_tiny.hex
+!/Build/full_instructions_gatec_full.txt
+!/Build/npu_program_gatec_full.hex
+!/Build/golden_first_add.bin
+!/Build/full_instructions_gate_d_first_add.txt
+!/Build/npu_program_gate_d_first_add.hex
+!/Build/golden_sppf_input.bin
+!/Build/golden_sppf_output.bin
+!/Build/full_instructions_gate_d_sppf.txt
+!/Build/npu_program_gate_d_sppf.hex
 
 # YOLO Model Weight
 *.pt

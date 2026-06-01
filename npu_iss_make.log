@@ -1,0 +1,40 @@
+/tmp/aoc-yolo-venv/bin/python npu_iss.py
+No --input given: using a fixed random image (seed 0)
+Executed 142 instructions, 36 compute layers
+  L 0 line   3 CONV  OUT=0x12C000 shape=(16, 320, 320) min=128 max=215 mean=132.3
+  L 1 line   6 CONV  OUT=0x000000 shape=(32, 160, 160) min=128 max=158 mean=129.2
+  L 2 line   9 CONV  OUT=0x0C8000 shape=(32, 160, 160) min=128 max=147 mean=129.6
+  L 3 line  12 CONV  OUT=0x000000 shape=(16, 160, 160) min=128 max=145 mean=131.5
+  L 4 line  15 CONV  OUT=0x064000 shape=(16, 160, 160) min=128 max=142 mean=129.9
+  L 5 line  18 ADD   OUT=0x000000 shape=(16, 160, 160) min=128 max=142 mean=130.3
+  L 6 line  26 CONV  OUT=0x000000 shape=(32, 160, 160) min=128 max=140 mean=130.0
+  L 7 line  29 CONV  OUT=0x0C8000 shape=(64, 80, 80) min=128 max=137 mean=129.6
+  L 8 line  32 CONV  OUT=0x000000 shape=(64, 80, 80) min=128 max=150 mean=132.3
+  L 9 line  35 CONV  OUT=0x064000 shape=(32, 80, 80) min=128 max=143 mean=130.0
+  L10 line  38 CONV  OUT=0x096000 shape=(32, 80, 80) min=128 max=139 mean=129.6
+  L11 line  41 ADD   OUT=0x064000 shape=(32, 80, 80) min=128 max=144 mean=133.6
+  L12 line  44 CONV  OUT=0x096000 shape=(32, 80, 80) min=128 max=142 mean=128.7
+  L13 line  47 CONV  OUT=0x0C8000 shape=(32, 80, 80) min=128 max=144 mean=132.3
+  L14 line  50 ADD   OUT=0x096000 shape=(32, 80, 80) min=128 max=146 mean=134.8
+  L15 line  60 CONV  OUT=0x000000 shape=(64, 80, 80) min=128 max=146 mean=130.8
+  L16 line  63 CONV  OUT=0x064000 shape=(128, 40, 40) min=128 max=148 mean=129.7
+  L17 line  67 CONV  OUT=0x000000 shape=(128, 40, 40) min=128 max=148 mean=130.2
+  L18 line  70 CONV  OUT=0x032000 shape=(64, 40, 40) min=128 max=140 mean=129.1
+  L19 line  73 CONV  OUT=0x04B000 shape=(64, 40, 40) min=128 max=140 mean=129.4
+  L20 line  76 ADD   OUT=0x032000 shape=(64, 40, 40) min=128 max=147 mean=131.3
+  L21 line  79 CONV  OUT=0x04B000 shape=(64, 40, 40) min=128 max=156 mean=129.8
+  L22 line  82 CONV  OUT=0x064000 shape=(64, 40, 40) min=128 max=139 mean=129.0
+  L23 line  85 ADD   OUT=0x04B000 shape=(64, 40, 40) min=128 max=147 mean=130.5
+  L24 line  95 CONV  OUT=0x000000 shape=(128, 40, 40) min=128 max=147 mean=130.3
+  L25 line  98 CONV  OUT=0x032000 shape=(256, 20, 20) min=128 max=145 mean=130.0
+  L26 line 102 CONV  OUT=0x000000 shape=(256, 20, 20) min=128 max=136 mean=129.6
+  L27 line 105 CONV  OUT=0x019000 shape=(128, 20, 20) min=128 max=142 mean=130.5
+  L28 line 108 CONV  OUT=0x025800 shape=(128, 20, 20) min=128 max=147 mean=132.1
+  L29 line 111 ADD   OUT=0x019000 shape=(128, 20, 20) min=128 max=149 mean=133.5
+  L30 line 119 CONV  OUT=0x000000 shape=(256, 20, 20) min=128 max=142 mean=131.4
+  L31 line 122 CONV  OUT=0x019000 shape=(128, 20, 20) min=124 max=145 mean=134.3
+  L32 line 124 POOL  OUT=0x000000 shape=(128, 20, 20) min=124 max=145 mean=134.8
+  L33 line 126 POOL  OUT=0x00C800 shape=(128, 20, 20) min=124 max=145 mean=135.0
+  L34 line 128 POOL  OUT=0x025800 shape=(128, 20, 20) min=124 max=145 mean=135.1
+  L35 line 139 CONV  OUT=0x000000 shape=(256, 20, 20) min=128 max=188 mean=141.7
+Per-layer feature maps dumped to ../Build/iss_layers.npz

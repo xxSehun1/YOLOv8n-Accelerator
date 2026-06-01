@@ -1,0 +1,136 @@
+-- using Gate C tiny first-conv program --
+cp ../../../Build/npu_program_gatec_tiny.hex npu_program.hex
+==== NPU_first_conv_tb Gate C via VCS (fast no-debug build) ====
+vcs -sverilog -full64 -timescale=1ns/1ps +define+NO_FSDB +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../NPU_ctrl_top.sv ../Control/Decoder.sv ../Control/DMA_ctrl.sv ../Compute/QuantizeUnit.sv ../Compute/ActivationUnit.sv ../Compute/AddUnit.sv ../Compute/PoolCompareUnit.sv ../Compute/ConvMacUnit.sv ../Compute/ConvAddrGen.sv ../Compute/PoolAddrGen.sv ../Compute/AddAddrGen.sv ../Compute/ComputeTop.sv ../Memory/SRAM.sv ../Memory/ICache.sv NPU_first_conv_tb.sv \
+       -top NPU_first_conv_tb -o simv_gate_c_first_conv
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:26:42 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../NPU_ctrl_top.sv'
+Parsing included file '../define.svh'.
+Back to file '../NPU_ctrl_top.sv'.
+Parsing design file '../Control/Decoder.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/Decoder.sv'.
+Parsing design file '../Control/DMA_ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DMA_ctrl.sv'.
+Parsing design file '../Compute/QuantizeUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/QuantizeUnit.sv'.
+Parsing design file '../Compute/ActivationUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ActivationUnit.sv'.
+Parsing design file '../Compute/AddUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/AddUnit.sv'.
+Parsing design file '../Compute/PoolCompareUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/PoolCompareUnit.sv'.
+Parsing design file '../Compute/ConvMacUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ConvMacUnit.sv'.
+Parsing design file '../Compute/ConvAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ConvAddrGen.sv'.
+Parsing design file '../Compute/PoolAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/PoolAddrGen.sv'.
+Parsing design file '../Compute/AddAddrGen.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/AddAddrGen.sv'.
+Parsing design file '../Compute/ComputeTop.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ComputeTop.sv'.
+Parsing design file '../Memory/SRAM.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/SRAM.sv'.
+Parsing design file '../Memory/ICache.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/ICache.sv'.
+Parsing design file 'NPU_first_conv_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'NPU_first_conv_tb.sv'.
+Top Level Modules:
+       NPU_first_conv_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+2 modules and 0 UDP read.
+recompiling module QuantizeUnit
+recompiling module NPU_first_conv_tb
+Both modules done.
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_gate_c_first_conv ]; then chmod a-x ../simv_gate_c_first_conv; fi
+g++  -o ../simv_gate_c_first_conv      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_gate_c_first_conv.daidir -Wl,-rpath=./simv_gate_c_first_conv.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3135129_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+../simv_gate_c_first_conv up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .365 seconds to compile + .157 seconds to elab + .175 seconds to link
+./simv_gate_c_first_conv
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:26 2026
+[TB] loaded 768 input bytes
+[TB] loaded 1277680 weight bytes
+[TB] loaded 1024 golden L0 bytes
+== NPU_first_conv_tb: Gate C tiny 16x16 first real CONV bit-exact check ==
+[TB] start pulsed at 105000
+[DECODE pc=0] DMA_LD dram=0x00000000 sram=0x00000000 size=0x00000300
+[DMA][pc=0]  DMA_LD DRAM_INPUT->SRAM dram=0x00000000 sram=0x00000000 size=0x00000300
+[DECODE pc=1] DMA_LD dram=0x01000000 sram=0x00380000 size=0x000001f0
+[DMA][pc=1] DMA_LD DRAM_WEIGHT->SRAM dram=0x01000000 sram=0x00380000 size=0x000001f0
+[DECODE pc=2] CONFIG H=16 W=16 IC=3 OC=16 stride=2 pcfg=0x07e shift=0x0a
+[DECODE pc=3] CONV in=0x00000000 wgt=0x00380000 out=0x0012c000 flags=0x00b stride=2 pad=1 kernel=3 uses_cfg(H=16 W=16 IC=3 OC=16 pcfg=0x07e shift=0x0a)
+[EXEC_ACCEPT][pc=3] first CONV out=0x0012c000 H=16 W=16 OC=16 stride=2 pad=1 kernel=3
+[COMPUTE][pc=3] start nested CONV addrgen in=0x00000000 wgt=0x00380000 out=0x0012c000
+[COMPUTE][pc=3] wrote through output byte offset 0x000000ff oc=3 oh=7 ow=7
+[COMPUTE][pc=3] wrote through output byte offset 0x000001ff oc=7 oh=7 ow=7
+[COMPUTE][pc=3] wrote through output byte offset 0x000002ff oc=11 oh=7 ow=7
+[COMPUTE][pc=3] wrote through output byte offset 0x000003ff oc=15 oh=7 ow=7
+[EXEC_DONE][pc=3] first CONV real output complete
+[TB] first CONV completed at 316325000
+[DECODE pc=4] HALT
+[TB] HALT observed at 316345000
+== First CONV checkpoints ==
+  PASS: exactly one EXEC op completed
+  PASS: debug opcode alias checked through first CONV and HALT
+  PASS: first EXEC was CONV
+  PASS: no POOL executed
+  PASS: no ADD executed
+  PASS: HALT reached after first CONV
+  PASS: input DMA_LD was observed
+  PASS: one weight DMA_LD was observed
+  PASS: no DMA_ST before first CONV completes
+  PASS: input first word copied DRAM->SRAM
+  PASS: input last word copied DRAM->SRAM
+  PASS: weight first word copied DRAM->SRAM
+  PASS: weight last word copied DRAM->SRAM
+  PASS: Gate C tiny 16x16 first CONV output byte-for-byte matches ../../../Build/golden_l0_tiny16_conv.bin
+== NPU_first_conv_tb GATE C PASS ==
+$finish called from file "NPU_first_conv_tb.sv", line 418.
+$finish at simulation time            316345000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 316345000 ps
+CPU Time:      0.210 seconds;       Data structure size:   4.2Mb
+Mon Jun  1 12:26:43 2026

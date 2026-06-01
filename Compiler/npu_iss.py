@@ -130,13 +130,13 @@ class NPU_ISS:
     def _dma_ld(self, f):
         dram = int(f['DRAM'], 16); sram = int(f['SRAM'], 16)
         size = int(f['SIZE'], 16)
-        if dram >= DRAM_WEIGHT_BASE:                       # weight load
-            self.sram[sram:sram + size] = self.dram[dram:dram + size]
-        elif not self.input_done:                          # input image load
-            self.sram[sram:sram + size] = self.dram[dram:dram + size]
+        # Current generated ISA no longer overloads DMA_LD for SRAM->SRAM
+        # concat. Concat is lowered through DRAM staging:
+        #   DMA_ST SRAM slice -> DRAM stage
+        #   DMA_LD DRAM stage -> SRAM concat destination
+        self.sram[sram:sram + size] = self.dram[dram:dram + size]
+        if dram < DRAM_WEIGHT_BASE and not self.input_done:
             self.input_done = True
-        else:                                              # concat SRAM->SRAM copy
-            self.sram[sram:sram + size] = self.sram[dram:dram + size]
 
     def _dma_st(self, f):
         dram = int(f['DRAM'], 16); sram = int(f['SRAM'], 16)

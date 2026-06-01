@@ -1,0 +1,50 @@
+TEST_DATA_ROOT_PATH=/tmp/tvm_test_data /tmp/aoc-yolo-venv/bin/python validation.py
+Loading model and running TVM passes...
+Computing golden (correct graph + ISS kernels)...
+Running ISS on the compiled instruction stream...
+
+Golden layers: 36   ISS layers: 36
+  L 0 CONV  (16, 320, 320)  match
+  L 1 CONV  (32, 160, 160)  match
+  L 2 CONV  (32, 160, 160)  match
+  L 3 CONV  (16, 160, 160)  match
+  L 4 CONV  (16, 160, 160)  match
+  L 5 ADD   (16, 160, 160)  match
+  L 6 CONV  (32, 160, 160)  match
+  L 7 CONV  (64, 80, 80)  match
+  L 8 CONV  (64, 80, 80)  match
+  L 9 CONV  (32, 80, 80)  match
+  L10 CONV  (32, 80, 80)  match
+  L11 ADD   (32, 80, 80)  match
+  L12 CONV  (32, 80, 80)  match
+  L13 CONV  (32, 80, 80)  match
+  L14 ADD   (32, 80, 80)  match
+  L15 CONV  (64, 80, 80)  match
+  L16 CONV  (128, 40, 40)  match
+  L17 CONV  (128, 40, 40)  match
+  L18 CONV  (64, 40, 40)  match
+  L19 CONV  (64, 40, 40)  match
+  L20 ADD   (64, 40, 40)  match
+  L21 CONV  (64, 40, 40)  match
+  L22 CONV  (64, 40, 40)  match
+  L23 ADD   (64, 40, 40)  match
+  L24 CONV  (128, 40, 40)  match
+  L25 CONV  (256, 20, 20)  match
+  L26 CONV  (256, 20, 20)  match
+  L27 CONV  (128, 20, 20)  match
+  L28 CONV  (128, 20, 20)  match
+  L29 ADD   (128, 20, 20)  match
+  L30 CONV  (256, 20, 20)  match
+  L31 CONV  (128, 20, 20)  match
+  L32 POOL  (128, 20, 20)  match
+  L33 POOL  (128, 20, 20)  match
+  L34 POOL  (128, 20, 20)  match
+  L35 CONV  (256, 20, 20)  match
+
+Frozen golden contract written:
+  ../Build/golden_p3.bin size=409600 sha256=6301b628e76bd6b05364a60616b63a85d75892e14d427690fdad3f554ddc63a8
+  ../Build/golden_p4.bin size=204800 sha256=18496400113eb02906871373a6820f1f24ec78aae48104aa012c92ad29c3cc20
+  ../Build/golden_p5.bin size=102400 sha256=672a90e1d8454d8e39c12b36db746229a1e601ce956f5ff7b3cf808a70242396
+  ../Build/golden_contract.md
+
+PASS — all 36 layers bit-exact. Compiler dataflow verified.

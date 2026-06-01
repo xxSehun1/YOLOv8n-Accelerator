@@ -1,0 +1,1742 @@
+==== QuantizeUnit_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Compute/QuantizeUnit.sv QuantizeUnit_tb.sv \
+       -top QuantizeUnit_tb -o simv_quantize_unit
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:36:36 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Compute/QuantizeUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/QuantizeUnit.sv'.
+Parsing design file 'QuantizeUnit_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'QuantizeUnit_tb.sv'.
+Top Level Modules:
+       QuantizeUnit_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module QuantizeUnit_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_quantize_unit ]; then chmod a-x ../simv_quantize_unit; fi
+g++  -o ../simv_quantize_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_quantize_unit.daidir -Wl,-rpath=./simv_quantize_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3157557_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_quantize_unit up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .240 seconds to compile + .155 seconds to elab + .217 seconds to link
+./simv_quantize_unit
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:36 2026
+== QuantizeUnit_tb ==
+  PASS: zero maps to zero-point
+  PASS: positive max no saturation
+  PASS: positive overflow saturates
+  PASS: negative min no saturation
+  PASS: negative overflow saturates
+  PASS: positive shift then saturation
+  PASS: negative arithmetic shift then min
+  PASS: rounding boundary is truncating shift
+  PASS: negative shift floors by arithmetic shift
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+  PASS: all supported shifts preserve -1
+== QuantizeUnit_tb PASS: 73 checks ==
+$finish called from file "QuantizeUnit_tb.sv", line 70.
+$finish at simulation time                73000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 73000 ps
+CPU Time:      0.170 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 12:36:37 2026
+==== ActivationUnit_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Compute/ActivationUnit.sv ActivationUnit_tb.sv \
+       -top ActivationUnit_tb -o simv_activation_unit
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:36:38 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Compute/ActivationUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ActivationUnit.sv'.
+Parsing design file 'ActivationUnit_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'ActivationUnit_tb.sv'.
+Top Level Modules:
+       ActivationUnit_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module ActivationUnit_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_activation_unit ]; then chmod a-x ../simv_activation_unit; fi
+g++  -o ../simv_activation_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_activation_unit.daidir -Wl,-rpath=./simv_activation_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3158158_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_activation_unit up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .247 seconds to compile + .155 seconds to elab + .211 seconds to link
+./simv_activation_unit
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:36 2026
+== ActivationUnit_tb ==
+  PASS: no activation keeps negative value
+  PASS: bias-only flag does not change activation
+  PASS: relu clamps negative
+  PASS: relu keeps positive
+  PASS: SiLU negative large rounds to zero
+  PASS: SiLU negative small rounds to zero
+  PASS: SiLU zero
+  PASS: SiLU positive one
+  PASS: SiLU positive clipped sigmoid
+  PASS: FLAGS=0x00b follows SiLU path
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+  PASS: sweep no activation
+  PASS: sweep relu
+  PASS: sweep silu
+== ActivationUnit_tb PASS: 778 checks ==
+$finish called from file "ActivationUnit_tb.sv", line 108.
+$finish at simulation time               778000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 778000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 12:36:39 2026
+==== AddUnit_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Compute/AddUnit.sv AddUnit_tb.sv \
+       -top AddUnit_tb -o simv_add_unit
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:36:40 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Compute/AddUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/AddUnit.sv'.
+Parsing design file 'AddUnit_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'AddUnit_tb.sv'.
+Top Level Modules:
+       AddUnit_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module AddUnit_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_add_unit ]; then chmod a-x ../simv_add_unit; fi
+g++  -o ../simv_add_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_add_unit.daidir -Wl,-rpath=./simv_add_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3158772_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_add_unit up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .243 seconds to compile + .154 seconds to elab + .210 seconds to link
+./simv_add_unit
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:36 2026
+== AddUnit_tb ==
+  PASS: zero plus zero
+  PASS: positive saturation
+  PASS: negative saturation
+  PASS: opposite signs
+  PASS: lhs/rhs shifted differently
+  PASS: mixed shifted positive result
+  PASS: small exact cancellation
+  PASS: both operands shifted
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+  PASS: sweep
+== AddUnit_tb PASS: 584 checks ==
+$finish called from file "AddUnit_tb.sv", line 99.
+$finish at simulation time               584000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 584000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 12:36:41 2026
+==== PoolCompareUnit_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Compute/PoolCompareUnit.sv PoolCompareUnit_tb.sv \
+       -top PoolCompareUnit_tb -o simv_pool_compare_unit
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:36:42 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Compute/PoolCompareUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/PoolCompareUnit.sv'.
+Parsing design file 'PoolCompareUnit_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'PoolCompareUnit_tb.sv'.
+Top Level Modules:
+       PoolCompareUnit_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module PoolCompareUnit_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_pool_compare_unit ]; then chmod a-x ../simv_pool_compare_unit; fi
+g++  -o ../simv_pool_compare_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_pool_compare_unit.daidir -Wl,-rpath=./simv_pool_compare_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3159385_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_pool_compare_unit up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .238 seconds to compile + .151 seconds to elab + .207 seconds to link
+./simv_pool_compare_unit
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:36 2026
+== PoolCompareUnit_tb ==
+  PASS: first candidate initializes max
+  PASS: candidate higher in signed domain wins
+  PASS: current higher stays
+  PASS: padding contributes uint8 zero
+  PASS: padding loses against real current
+  PASS: candidate invalid keeps current
+  PASS: no valid input remains invalid
+  PASS: all equal keeps current
+  PASS: top-left border pad then real pixel
+  PASS: uint8 255 is signed +127
+== PoolCompareUnit_tb PASS: 10 checks ==
+$finish called from file "PoolCompareUnit_tb.sv", line 76.
+$finish at simulation time                10000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 10000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 12:36:43 2026
+==== ConvMacUnit_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Compute/ConvMacUnit.sv ConvMacUnit_tb.sv \
+       -top ConvMacUnit_tb -o simv_conv_mac_unit
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 12:36:44 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Compute/ConvMacUnit.sv'
+Parsing included file '../define.svh'.
+Back to file '../Compute/ConvMacUnit.sv'.
+Parsing design file 'ConvMacUnit_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'ConvMacUnit_tb.sv'.
+Top Level Modules:
+       ConvMacUnit_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module ConvMacUnit_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_conv_mac_unit ]; then chmod a-x ../simv_conv_mac_unit; fi
+g++  -o ../simv_conv_mac_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_conv_mac_unit.daidir -Wl,-rpath=./simv_conv_mac_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _3159990_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_conv_mac_unit up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .239 seconds to compile + .152 seconds to elab + .211 seconds to link
+./simv_conv_mac_unit
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 12:36 2026
+== ConvMacUnit_tb ==
+  PASS: zero-point activation has zero product
+  PASS: positive activation times negative weight
+  PASS: negative activation times negative weight from clear
+  PASS: bias is explicitly sign-extended and added
+  PASS: clear plus bias starts from zero
+  PASS: large psum stays 64-bit
+== ConvMacUnit_tb PASS: 6 checks ==
+$finish called from file "ConvMacUnit_tb.sv", line 92.
+$finish at simulation time                 6000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 6000 ps
+CPU Time:      0.170 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 12:36:45 2026
+==== Primitive compute unit VCS regression PASS ====

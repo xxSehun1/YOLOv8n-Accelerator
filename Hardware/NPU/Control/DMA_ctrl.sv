@@ -1,13 +1,12 @@
 `include "define.svh"
 // DMA_ctrl: block data mover, driven by the Decoder.
 //
-// Handles three transfer kinds (all sized in bytes):
-//   DMA_LD weight: DRAM weight region -> SRAM
-//   DMA_LD input:  DRAM input region  -> SRAM
-//   DMA_LD concat: SRAM -> SRAM            (dma_dram carries an SRAM addr)
-//   DMA_ST:        SRAM -> DRAM
-// Concat vs DRAM source is distinguished by dma_dram < DRAM_WEIGHT_BASE and
-// the source already being an SRAM address (see compiler notes).
+// Handles the current compiler DMA contract (all sizes are in bytes):
+//   DMA_LD: DRAM[dma_dram] -> SRAM[dma_sram]
+//   DMA_ST: SRAM[dma_sram] -> DRAM[dma_dram]
+//
+// New compiler concat lowering does not overload DMA_LD as SRAM->SRAM.
+// Concat slices are staged through DRAM by DMA_ST followed by DMA_LD.
 module DMA_ctrl (
     input  logic         clk,
     input  logic         rst,
@@ -34,21 +33,12 @@ module DMA_ctrl (
     output logic [`DATA_BITS-1:0]      sram_wdata,
     input  logic [`DATA_BITS-1:0]      sram_rdata,
 
-    // Simulation/debug observability for the current compiler contract.
+    // Simulation/debug observability.
     output logic         debug_input_loaded,
     output logic [15:0]  debug_weight_load_count,
     output logic [15:0]  debug_sram_copy_count,
     output logic [15:0]  debug_store_count
 );
-    // Current compiler/ISS compatibility:
-    //   DMA_ST                      : SRAM[dma_sram] -> DRAM[dma_dram]
-    //   DMA_LD dma_dram >= WEIGHT   : DRAM[dma_dram] -> SRAM[dma_sram]
-    //   first DMA_LD below WEIGHT   : DRAM input     -> SRAM[dma_sram]
-    //   later DMA_LD below WEIGHT   : SRAM[dma_dram] -> SRAM[dma_sram]
-    //
-    // The final ISA should use an explicit DMA_COPY/CONCAT op. This overload is
-    // kept here so RTL simulation matches the current generated program.
-
     typedef enum logic [1:0] {S_IDLE, S_RD, S_WR, S_DONE} state_t;
     state_t state, next;
 
@@ -56,7 +46,6 @@ module DMA_ctrl (
     logic [31:0] nwords;     // total words = size / 4
     logic        input_loaded;
     logic        tr_is_store;
-    logic        tr_src_sram;
 
     // Next-state logic.
     always_comb begin
@@ -76,7 +65,6 @@ module DMA_ctrl (
             state <= S_IDLE; widx <= '0; nwords <= '0;
             input_loaded <= 1'b0;
             tr_is_store  <= 1'b0;
-            tr_src_sram  <= 1'b0;
             debug_weight_load_count <= '0;
             debug_sram_copy_count   <= '0;
             debug_store_count       <= '0;
@@ -88,9 +76,6 @@ module DMA_ctrl (
                     nwords <= dma_size >> 2;
                     if (dma_valid) begin
                         tr_is_store <= dma_is_store;
-                        tr_src_sram <= !dma_is_store
-                                    && (dma_dram < `DRAM_WEIGHT_BASE)
-                                    && input_loaded;
 
                         if (dma_is_store) begin
                             debug_store_count <= debug_store_count + 16'd1;
@@ -98,8 +83,6 @@ module DMA_ctrl (
                             debug_weight_load_count <= debug_weight_load_count + 16'd1;
                         end else if (!input_loaded) begin
                             input_loaded <= 1'b1;
-                        end else begin
-                            debug_sram_copy_count <= debug_sram_copy_count + 16'd1;
                         end
                     end
                 end
@@ -117,9 +100,9 @@ module DMA_ctrl (
         sram_en = 1'b0; sram_we = 1'b0; sram_addr  = '0; sram_wdata = '0;
 
         if (state == S_RD) begin
-            if (tr_is_store || tr_src_sram) begin         // SRAM source
+            if (tr_is_store) begin                        // SRAM source
                 sram_en   = 1'b1;
-                sram_addr = (tr_is_store ? dma_sram : dma_dram) + (widx << 2);
+                sram_addr = dma_sram + (widx << 2);
             end else begin                                // DRAM source
                 dram_en   = 1'b1;
                 dram_addr = dma_dram + (widx << 2);
@@ -132,7 +115,7 @@ module DMA_ctrl (
             end else begin                                // write SRAM
                 sram_en    = 1'b1; sram_we = 1'b1;
                 sram_addr  = (dma_sram + (widx << 2));
-                sram_wdata = tr_src_sram ? sram_rdata : dram_rdata;
+                sram_wdata = dram_rdata;
             end
         end
     end

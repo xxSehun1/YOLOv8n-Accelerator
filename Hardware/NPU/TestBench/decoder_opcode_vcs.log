@@ -1,0 +1,96 @@
+==== Decoder_opcode_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Control/Decoder.sv Decoder_opcode_tb.sv \
+       -top Decoder_opcode_tb -o simv_decoder_opcode
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Sun May 31 20:08:44 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+The design hasn't changed and need not be recompiled. 
+If you really want to, delete file /home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/simv_decoder_opcode.daidir/.vcs.timestamp and
+run VCS again.
+
+./simv_decoder_opcode
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  May 31 20:08 2026
+== Decoder DMA_LD ==
+  PASS: DMA_LD holds PC while waiting for dma_done
+  PASS: DMA_LD drives dma_is_store=0
+  PASS: DMA_LD dram field decoded
+  PASS: DMA_LD sram field decoded
+  PASS: DMA_LD size field decoded
+  PASS: DMA_LD does not assert exec_valid
+  PASS: DMA_LD advances to following HALT
+== Decoder DMA_ST ==
+  PASS: DMA_ST drives dma_is_store=1
+  PASS: DMA_ST dram field decoded
+  PASS: DMA_ST sram field decoded
+  PASS: DMA_ST size field decoded
+  PASS: DMA_ST does not assert exec_valid
+== Decoder CONFIG + CONV ==
+  PASS: CONV holds PC while waiting for exec_done
+  PASS: CONV drives exec_op=0
+  PASS: CONV consumes CONFIG H/W
+  PASS: CONV consumes CONFIG C fields
+  PASS: CONV consumes CONFIG pcfg/shift
+  PASS: CONV input address decoded
+  PASS: CONV weight address decoded
+  PASS: CONV output address decoded
+  PASS: CONV flags decoded
+  PASS: CONV stride/pad/kernel decoded
+  PASS: CONV does not assert dma_valid
+== Decoder CONFIG + POOL ==
+  PASS: POOL drives exec_op=1
+  PASS: POOL consumes CONFIG H/W
+  PASS: POOL consumes CONFIG output channels
+  PASS: POOL pad/kernel decoded
+== Decoder ADDCFG + CONFIG + ADD ==
+  PASS: ADD holds PC while waiting for exec_done
+  PASS: ADD drives exec_op=2
+  PASS: ADD consumes ADDCFG lhs/rhs shifts
+  PASS: ADD consumes CONFIG H/W
+  PASS: ADD consumes CONFIG C fields
+  PASS: ADD lhs address decoded
+  PASS: ADD rhs address decoded through WGT field
+  PASS: ADD output address decoded
+== Decoder HALT ==
+  PASS: HALT parks PC at halt instruction
+  PASS: HALT asserts no command valid
+== Decoder unsupported CONCAT ==
+  PASS: CONCAT advanced PC to following HALT
+  PASS: CONCAT asserted no command valid
+== Decoder unsupported OTHER ==
+  PASS: OTHER advanced PC to following HALT
+  PASS: OTHER asserted no command valid
+== Decoder unsupported BIAS ==
+  PASS: BIAS advanced PC to following HALT
+  PASS: BIAS asserted no command valid
+== Decoder unsupported UNKNOWN_0xE ==
+  PASS: UNKNOWN_0xE advanced PC to following HALT
+  PASS: UNKNOWN_0xE asserted no command valid
+== Decoder_opcode_tb PASS ==
+$finish called from file "Decoder_opcode_tb.sv", line 315.
+$finish at simulation time              1205000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 1205000 ps
+CPU Time:      0.170 seconds;       Data structure size:   0.0Mb
+Sun May 31 20:08:45 2026

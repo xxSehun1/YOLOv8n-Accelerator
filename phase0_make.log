@@ -1,0 +1,45 @@
+/tmp/aoc-yolo-venv/bin/python phase0_audit.py --strict
+== Phase 0 artifact presence ==
+  PASS: Build/full_instructions.txt exists size=11092
+  PASS: Build/npu_program.hex exists size=4686
+  PASS: Build/weights.bin exists size=1277680
+  PASS: Build/mapping.txt exists size=5647
+
+== Artifact hashes ==
+  SHA256 Build/full_instructions.txt 04dbd5890f29ac23b0aa04d9c56d8a2b9317da2638332b613315d929968a51f7
+  SHA256 Build/npu_program.hex 40521804092be33c6b4f33481ca657c0381981c2916fa6a3f10764451af8a40b
+  SHA256 Build/weights.bin b2a17235e347df9cc71dccd8e6190cb430994ce9bf4bf63c8dfed072d012da2f
+  SHA256 Build/mapping.txt 82cd922900052aac90276a36d9ccc6776010446ab5eac75d7a0de49791b4b173
+
+== Optional generated artifacts ==
+  INFO: Build/iss_layers.npz exists size=9788118
+
+== ISA structural checks ==
+  INFO: instruction_count=142
+  INFO: ADD=6
+  INFO: ADDCFG=6
+  INFO: CONFIG=36
+  INFO: CONV=27
+  INFO: DMA_LD=46
+  INFO: DMA_ST=17
+  INFO: HALT=1
+  INFO: POOL=3
+  PASS: final instruction is HALT
+  PASS: no old low-address overloaded DMA_LD concat pattern found
+  PASS: DMA_LD/DMA_ST counts match current generated backbone
+  PASS: CONV/POOL/ADD counts match current generated backbone
+
+== Frozen golden-contract files ==
+  PASS: Build/golden_contract.md exists size=1684
+  SHA256 Build/golden_contract.md 57b1892c81dbbc6de1d31e3bb27d670880a2b693fb24d260947733ffe6467853
+  PASS: Build/golden_p3.bin exists size=409600
+  SHA256 Build/golden_p3.bin 6301b628e76bd6b05364a60616b63a85d75892e14d427690fdad3f554ddc63a8
+  PASS: Build/golden_p4.bin exists size=204800
+  SHA256 Build/golden_p4.bin 18496400113eb02906871373a6820f1f24ec78aae48104aa012c92ad29c3cc20
+  PASS: Build/golden_p5.bin exists size=102400
+  SHA256 Build/golden_p5.bin 672a90e1d8454d8e39c12b36db746229a1e601ce956f5ff7b3cf808a70242396
+  PASS: final sign-off golden contract files are present
+
+== Phase 0 audit result ==
+  PASS: generated ISA/artifact structure is internally sane
+  PASS: frozen final golden contract is present

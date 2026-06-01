@@ -3,12 +3,10 @@
 // NPU_ctrl_top: control/ISA/data-exchange integration target.
 //
 // This top is intentionally scoped to the outer-NPU responsibility:
-//   ICache -> Decoder -> { DMA_ctrl, DummyExec } -> SRAM/DRAM
+//   ICache -> Decoder -> { DMA_ctrl, ComputeTop } -> SRAM/DRAM
 //
-// The compute subsystem is replaced by DummyExec so the compiler-generated
-// 128-instruction backbone program can verify start, instruction fetch/decode,
-// DMA input/weight loads, overloaded DMA_LD concat copies, DMA_ST spills, and
-// HALT without depending on the systolic/PPU team's unfinished RTL.
+// Gate C removes DummyExec from this integration path. ComputeTop is a
+// correctness-first sequential engine for real numerical bring-up.
 module NPU_ctrl_top (
     input  logic         clk,
     input  logic         rst,
@@ -24,6 +22,8 @@ module NPU_ctrl_top (
 
     // Debug/checkpoint outputs for the top-level TB.
     output logic [15:0]  debug_pc,
+    output logic [3:0]   debug_opcode,
+    output logic [63:0]  debug_opcode_name,
     output logic         debug_instr_req,
     output logic         debug_instr_valid,
     output logic         debug_exec_valid,
@@ -43,7 +43,7 @@ module NPU_ctrl_top (
     logic [127:0] instr;
     logic         instr_valid;
 
-    // Decoder -> DummyExec.
+    // Decoder -> ComputeTop.
     logic         exec_valid;
     logic [1:0]   exec_op;
     logic [15:0]  exec_in_h, exec_in_w, exec_in_c, exec_out_c;
@@ -118,31 +118,52 @@ module NPU_ctrl_top (
         .debug_store_count(debug_store_count)
     );
 
-    DummyExec i_dummy_exec (
+    ComputeTop i_compute (
         .clk(clk), .rst(rst),
         .exec_valid(exec_valid), .exec_op(exec_op),
-        .exec_in_h(exec_in_h), .exec_in_w(exec_in_w),
-        .exec_out_c(exec_out_c), .exec_out_addr(exec_out_addr),
+        .exec_in_h(exec_in_h), .exec_in_w(exec_in_w), .exec_in_c(exec_in_c),
+        .exec_out_c(exec_out_c),
+        .exec_in_addr(exec_in_addr), .exec_wgt_addr(exec_wgt_addr),
+        .exec_out_addr(exec_out_addr),
+        .exec_flags(exec_flags),
         .exec_stride(exec_stride), .exec_pad(exec_pad), .exec_kernel(exec_kernel),
+        .exec_pconfig(exec_pconfig),
+        .exec_shift(exec_shift),
+        .exec_lhs_shift(exec_lhs_shift), .exec_rhs_shift(exec_rhs_shift),
         .exec_done(exec_done),
         .sram_en(b_en), .sram_we(b_we), .sram_addr(b_addr),
         .sram_wdata(b_wdata), .sram_rdata(b_rdata),
+        .dma_sram_en(a_en), .dma_sram_we(a_we), .dma_sram_addr(a_addr),
+        .dma_sram_wdata(a_wdata),
         .debug_exec_count(debug_exec_count),
         .debug_conv_count(debug_conv_count),
         .debug_pool_count(debug_pool_count),
         .debug_add_count(debug_add_count)
     );
 
+    function automatic [63:0] opcode_ascii(input logic [3:0] op);
+        case (op)
+            `OP_CONV:   opcode_ascii = "CONV    ";
+            `OP_POOL:   opcode_ascii = "POOL    ";
+            `OP_CONCAT: opcode_ascii = "CONCAT  ";
+            `OP_ADD:    opcode_ascii = "ADD     ";
+            `OP_OTHER:  opcode_ascii = "OTHER   ";
+            `OP_CONFIG: opcode_ascii = "CONFIG  ";
+            `OP_BIAS:   opcode_ascii = "BIAS    ";
+            `OP_DMA_LD: opcode_ascii = "DMA_LD  ";
+            `OP_DMA_ST: opcode_ascii = "DMA_ST  ";
+            `OP_ADDCFG: opcode_ascii = "ADDCFG  ";
+            `OP_HALT:   opcode_ascii = "HALT    ";
+            default:    opcode_ascii = "UNKNOWN ";
+        endcase
+    endfunction
+
     assign debug_pc          = pc;
+    assign debug_opcode      = instr[127:124];
+    assign debug_opcode_name = opcode_ascii(instr[127:124]);
     assign debug_instr_req   = instr_req;
     assign debug_instr_valid = instr_valid;
     assign debug_exec_valid  = exec_valid;
     assign debug_dma_valid   = dma_valid;
-
-    // Intentional decode-only fields in this control-focused top.
-    logic unused_decoder_fields;
-    assign unused_decoder_fields = ^{exec_in_c, exec_in_addr, exec_wgt_addr,
-                                     exec_flags, exec_pconfig, exec_shift,
-                                     exec_lhs_shift, exec_rhs_shift};
 
 endmodule

@@ -39,10 +39,21 @@ module SRAM #(
     end
 
     // Port 1.
+    // Correctness-first ComputeTop uses deterministic one-cycle scalar steps.
+    // The compute read side is asynchronous so a state can present a byte
+    // address and consume the selected 32-bit word at the same clock edge.
+    // Writes remain synchronous.
     always @(posedge clk) begin
+        if (b_en && b_we) begin
+            mem[b_addr[ADDR_BITS-1:WORD_LSB]] <= b_wdata;
+        end
+    end
+
+    always_comb begin
         if (b_en) begin
-            if (b_we) mem[b_addr[ADDR_BITS-1:WORD_LSB]] <= b_wdata;
-            b_rdata <= mem[b_addr[ADDR_BITS-1:WORD_LSB]];
+            b_rdata = mem[b_addr[ADDR_BITS-1:WORD_LSB]];
+        end else begin
+            b_rdata = '0;
         end
     end
 endmodule
