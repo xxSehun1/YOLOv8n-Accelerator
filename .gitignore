@@ -37,6 +37,7 @@ __pycache__/
 # RTL simulation artifacts
 simv*
 csrc/
+csrc*/
 ucli.key
 xcelium.d/
 xrun.history

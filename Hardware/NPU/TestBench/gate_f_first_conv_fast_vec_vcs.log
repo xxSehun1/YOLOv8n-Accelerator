@@ -1,0 +1,180 @@
+==== NPU_gate_f_first_conv_fast_tb TRUE systolic vector first-CONV via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps +define+NO_FSDB +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU -Mdir=csrc_gate_f_fast_vec \
+       ../NPU_top.sv ../Control/Decoder.sv ../Control/DMA_ctrl.sv ../Control/ConfigLoader.sv ../Control/PingPong_Ctrl.sv ../Control/OpsumCollector.sv ../Buffer/Weight_Buffer.sv ../Buffer/IOMap_Buffer.sv ../Buffer/Line_Buffer.sv ../Memory/SRAM.sv ../Memory/ICache.sv ../PE_Array/PE_array.sv ../PPU/PPU.sv ../PPU/PSUM_acc.sv ../PPU/Add_Qint8.sv NPU_gate_f_first_conv_fast_tb.sv \
+       -top NPU_gate_f_first_conv_fast_tb -o simv_gate_f_first_conv_fast_vec
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Tue Jun  2 17:42:27 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../NPU_top.sv'
+Parsing included file '../define.svh'.
+Back to file '../NPU_top.sv'.
+Parsing design file '../Control/Decoder.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/Decoder.sv'.
+Parsing design file '../Control/DMA_ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DMA_ctrl.sv'.
+Parsing design file '../Control/ConfigLoader.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/ConfigLoader.sv'.
+Parsing design file '../Control/PingPong_Ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/PingPong_Ctrl.sv'.
+Parsing design file '../Control/OpsumCollector.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/OpsumCollector.sv'.
+Parsing design file '../Buffer/Weight_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Weight_Buffer.sv'.
+Parsing design file '../Buffer/IOMap_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/IOMap_Buffer.sv'.
+Parsing design file '../Buffer/Line_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Line_Buffer.sv'.
+Parsing design file '../Memory/SRAM.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/SRAM.sv'.
+Parsing design file '../Memory/ICache.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/ICache.sv'.
+Parsing design file '../PE_Array/PE_array.sv'
+Parsing included file '../PE_Array/PE.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PE_Array/PE.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing included file '../PE_Array/GIN/GIN.sv'.
+Parsing included file '../PE_Array/GIN/GIN_Bus.sv'.
+Back to file '../PE_Array/GIN/GIN.sv'.
+Parsing included file '../PE_Array/GIN/GIN_MulticastController.sv'.
+Back to file '../PE_Array/GIN/GIN.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing included file '../PE_Array/GON/GON.sv'.
+Parsing included file '../PE_Array/GON/GON_Bus.sv'.
+Back to file '../PE_Array/GON/GON.sv'.
+Parsing included file '../PE_Array/GON/GON_MulticastController.sv'.
+Back to file '../PE_Array/GON/GON.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing design file '../PPU/PPU.sv'
+Parsing included file '../PPU/PostQuant.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/PostQuant.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../PPU/Maxpool_Qint8.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../PPU/SiLU_Qint8.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/SiLU_Qint8.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/PPU.sv'.
+Parsing design file '../PPU/PSUM_acc.sv'
+Parsing included file '../define.svh'.
+Back to file '../PPU/PSUM_acc.sv'.
+Parsing design file '../PPU/Add_Qint8.sv'
+Parsing included file '../define.svh'.
+Back to file '../PPU/Add_Qint8.sv'.
+Parsing design file 'NPU_gate_f_first_conv_fast_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'NPU_gate_f_first_conv_fast_tb.sv'.
+Top Level Modules:
+       NPU_gate_f_first_conv_fast_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+18 modules and 0 UDP read.
+recompiling module Decoder
+recompiling module DMA_ctrl
+recompiling module ConfigLoader
+recompiling module OpsumCollector
+recompiling module Weight_Buffer
+recompiling module IOMap_Buffer
+recompiling module Line_Buffer
+recompiling module SRAM
+recompiling module ICache
+recompiling module PE
+recompiling module GIN_MulticastController
+recompiling module GIN
+recompiling module GON_Bus
+recompiling module GON_MulticastController
+recompiling module GON
+recompiling module PPU
+recompiling module PSUM_acc
+recompiling module NPU_gate_f_first_conv_fast_tb
+All of 18 modules done
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc_gate_f_fast_vec'
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc_gate_f_fast_vec'
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc_gate_f_fast_vec'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_gate_f_first_conv_fast_vec ]; then chmod a-x ../simv_gate_f_first_conv_fast_vec; fi
+g++  -o ../simv_gate_f_first_conv_fast_vec      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_gate_f_first_conv_fast_vec.daidir -Wl,-rpath=./simv_gate_f_first_conv_fast_vec.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _1621380_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive          /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+../simv_gate_f_first_conv_fast_vec up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc_gate_f_fast_vec'
+CPU time: 2.481 seconds to compile + .379 seconds to elab + .194 seconds to link
+./simv_gate_f_first_conv_fast_vec
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 17:42 2026
+[TB] loaded ../../../Build/input_seed0.bin bytes=1228800
+[TB] loaded ../../../Build/weights.bin bytes=496
+[TB] loaded ../../../Build/golden_l0_conv.bin bytes=1638400
+== Gate F TRUE systolic fast full first-CONV check ==
+[TB] backdoor SRAM preload done input=0x00000000 weight=0x00380000
+[HB][55000] cyc=0 pc=0 ppc_st=0 tile_base=0 tile_w=1 oy=0 opsum=0 halted=0
+[TB] start pulsed at 105000
+[HB][1000055000] cyc=100000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=11 opsum=0 halted=0
+[HB][2000055000] cyc=200000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=22 opsum=0 halted=0
+[HB][3000055000] cyc=300000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=33 opsum=0 halted=0
+[HB][4000055000] cyc=400000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=44 opsum=0 halted=0
+[HB][5000055000] cyc=500000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=55 opsum=0 halted=0
+[HB][6000055000] cyc=600000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=66 opsum=0 halted=0
+[HB][7000055000] cyc=700000 pc=1 ppc_st=6 tile_base=16 tile_w=16 oy=77 opsum=0 halted=0
+[HB][8000055000] cyc=800000 pc=1 ppc_st=6 tile_base=128 tile_w=16 oy=88 opsum=0 halted=0
+[HB][9000055000] cyc=900000 pc=1 ppc_st=6 tile_base=240 tile_w=16 oy=99 opsum=12 halted=0
+[HB][10000055000] cyc=1000000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=111 opsum=0 halted=0
+[HB][11000055000] cyc=1100000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=122 opsum=0 halted=0
+[HB][12000055000] cyc=1200000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=133 opsum=0 halted=0
+[HB][13000055000] cyc=1300000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=144 opsum=0 halted=0
+[HB][14000055000] cyc=1400000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=155 opsum=0 halted=0
+[HB][15000055000] cyc=1500000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=166 opsum=0 halted=0
+[HB][16000055000] cyc=1600000 pc=1 ppc_st=6 tile_base=32 tile_w=16 oy=177 opsum=0 halted=0
+[HB][17000055000] cyc=1700000 pc=1 ppc_st=6 tile_base=144 tile_w=16 oy=188 opsum=0 halted=0
+[HB][18000055000] cyc=1800000 pc=1 ppc_st=6 tile_base=256 tile_w=16 oy=199 opsum=0 halted=0
+[HB][19000055000] cyc=1900000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=211 opsum=0 halted=0
+[HB][20000055000] cyc=2000000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=222 opsum=0 halted=0
+[HB][21000055000] cyc=2100000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=233 opsum=0 halted=0
+[HB][22000055000] cyc=2200000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=244 opsum=0 halted=0
+[HB][23000055000] cyc=2300000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=255 opsum=0 halted=0
+[HB][24000055000] cyc=2400000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=266 opsum=0 halted=0
+[HB][25000055000] cyc=2500000 pc=1 ppc_st=6 tile_base=32 tile_w=16 oy=277 opsum=10 halted=0
+[HB][26000055000] cyc=2600000 pc=1 ppc_st=6 tile_base=160 tile_w=16 oy=288 opsum=0 halted=0
+[HB][27000055000] cyc=2700000 pc=1 ppc_st=6 tile_base=272 tile_w=16 oy=299 opsum=0 halted=0
+[HB][28000055000] cyc=2800000 pc=1 ppc_st=4 tile_base=0 tile_w=16 oy=311 opsum=0 halted=0
+[TB] HALT observed at 28804805000 cycle=2880476 act_words=409600
+[RESULT] mismatch_count=0 output_words=409600 act_words=409600
+== GATE F FAST FULL FIRST-CONV TRUE SYSTOLIC PASS ==
+$finish called from file "NPU_gate_f_first_conv_fast_tb.sv", line 237.
+$finish at simulation time          28805005000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 28805005000 ps
+CPU Time:    412.940 seconds;       Data structure size:  22.8Mb
+Tue Jun  2 17:49:25 2026

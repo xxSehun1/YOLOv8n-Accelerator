@@ -1,0 +1,253 @@
+-- using true-systolic Gate F micro smoke program --
+cp npu_program_gatef_micro.hex npu_program.hex
+==== NPU_top_tb true-systolic micro Gate F smoke via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../NPU_top.sv ../Control/Decoder.sv ../Control/DMA_ctrl.sv ../Control/ConfigLoader.sv ../Control/PingPong_Ctrl.sv ../Control/OpsumCollector.sv ../Buffer/Weight_Buffer.sv ../Buffer/IOMap_Buffer.sv ../Buffer/Line_Buffer.sv ../Memory/SRAM.sv ../Memory/ICache.sv ../PE_Array/PE_array.sv ../PPU/PPU.sv ../PPU/PSUM_acc.sv ../PPU/Add_Qint8.sv NPU_top_tb.sv \
+       -top NPU_top_tb -o simv_npu_top_tb
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Tue Jun  2 17:17:41 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../NPU_top.sv'
+Parsing included file '../define.svh'.
+Back to file '../NPU_top.sv'.
+Parsing design file '../Control/Decoder.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/Decoder.sv'.
+Parsing design file '../Control/DMA_ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/DMA_ctrl.sv'.
+Parsing design file '../Control/ConfigLoader.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/ConfigLoader.sv'.
+Parsing design file '../Control/PingPong_Ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/PingPong_Ctrl.sv'.
+Parsing design file '../Control/OpsumCollector.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/OpsumCollector.sv'.
+Parsing design file '../Buffer/Weight_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Weight_Buffer.sv'.
+Parsing design file '../Buffer/IOMap_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/IOMap_Buffer.sv'.
+Parsing design file '../Buffer/Line_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Line_Buffer.sv'.
+Parsing design file '../Memory/SRAM.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/SRAM.sv'.
+Parsing design file '../Memory/ICache.sv'
+Parsing included file '../define.svh'.
+Back to file '../Memory/ICache.sv'.
+Parsing design file '../PE_Array/PE_array.sv'
+Parsing included file '../PE_Array/PE.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PE_Array/PE.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing included file '../PE_Array/GIN/GIN.sv'.
+Parsing included file '../PE_Array/GIN/GIN_Bus.sv'.
+Back to file '../PE_Array/GIN/GIN.sv'.
+Parsing included file '../PE_Array/GIN/GIN_MulticastController.sv'.
+Back to file '../PE_Array/GIN/GIN.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing included file '../PE_Array/GON/GON.sv'.
+Parsing included file '../PE_Array/GON/GON_Bus.sv'.
+Back to file '../PE_Array/GON/GON.sv'.
+Parsing included file '../PE_Array/GON/GON_MulticastController.sv'.
+Back to file '../PE_Array/GON/GON.sv'.
+Back to file '../PE_Array/PE_array.sv'.
+Parsing design file '../PPU/PPU.sv'
+Parsing included file '../PPU/PostQuant.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/PostQuant.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../PPU/Maxpool_Qint8.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../PPU/SiLU_Qint8.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/SiLU_Qint8.sv'.
+Back to file '../PPU/PPU.sv'.
+Parsing included file '../define.svh'.
+Back to file '../PPU/PPU.sv'.
+Parsing design file '../PPU/PSUM_acc.sv'
+Parsing included file '../define.svh'.
+Back to file '../PPU/PSUM_acc.sv'.
+Parsing design file '../PPU/Add_Qint8.sv'
+Parsing included file '../define.svh'.
+Back to file '../PPU/Add_Qint8.sv'.
+Parsing design file 'NPU_top_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'NPU_top_tb.sv'.
+Top Level Modules:
+       NPU_top_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+17 modules and 0 UDP read.
+recompiling module DMA_ctrl
+recompiling module ConfigLoader
+recompiling module PingPong_Ctrl
+recompiling module OpsumCollector
+recompiling module Weight_Buffer
+recompiling module IOMap_Buffer
+recompiling module Line_Buffer
+recompiling module ICache
+recompiling module PE
+recompiling module GIN_Bus
+recompiling module GIN
+recompiling module GON_Bus
+recompiling module GON
+recompiling module PE_array
+recompiling module PPU
+recompiling module Add_Qint8
+recompiling module NPU_top_tb
+All of 17 modules done
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_npu_top_tb ]; then chmod a-x ../simv_npu_top_tb; fi
+g++  -o ../simv_npu_top_tb      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_npu_top_tb.daidir -Wl,-rpath=./simv_npu_top_tb.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _1554666_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_npu_top_tb up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: 3.192 seconds to compile + .375 seconds to elab + .270 seconds to link
+./simv_npu_top_tb
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 17:17 2026
+== NPU_top true-systolic micro Gate-F smoke test ==
+   start asserted at 105000
+[MON][DMA_SRAM_WR][155000] n=0 addr=0x00380000 data=0x01010101
+[MON][DMA_SRAM_WR][175000] n=1 addr=0x00380004 data=0x01010101
+[MON][DMA_SRAM_WR][195000] n=2 addr=0x00380008 data=0x01010101
+[MON][DMA_SRAM_WR][215000] n=3 addr=0x0038000c data=0x01010101
+[MON][DMA_SRAM_WR][235000] n=4 addr=0x00380010 data=0x01010101
+[MON][DMA_SRAM_WR][255000] n=5 addr=0x00380014 data=0x01010101
+[MON][DMA_SRAM_WR][275000] n=6 addr=0x00380018 data=0x01010101
+[MON][DMA_SRAM_WR][295000] n=7 addr=0x0038001c data=0x01010101
+[MON][DMA_SRAM_WR][315000] n=8 addr=0x00380020 data=0x01010101
+[MON][DMA_SRAM_WR][335000] n=9 addr=0x00380024 data=0x01010101
+[MON][DMA_SRAM_WR][355000] n=10 addr=0x00380028 data=0x01010101
+[MON][DMA_SRAM_WR][375000] n=11 addr=0x0038002c data=0x01010101
+[MON][DMA_SRAM_WR][395000] n=12 addr=0x00380030 data=0x01010101
+[MON][DMA_SRAM_WR][415000] n=13 addr=0x00380034 data=0x01010101
+[MON][DMA_SRAM_WR][435000] n=14 addr=0x00380038 data=0x01010101
+[MON][DMA_SRAM_WR][455000] n=15 addr=0x0038003c data=0x01010101
+[MON][DMA_SRAM_WR][475000] n=16 addr=0x00380040 data=0x01010101
+[MON][DMA_SRAM_WR][495000] n=17 addr=0x00380044 data=0x01010101
+[MON][DMA_SRAM_WR][515000] n=18 addr=0x00380048 data=0x01010101
+[MON][DMA_SRAM_WR][535000] n=19 addr=0x0038004c data=0x01010101
+[MON][DMA_SRAM_WR][555000] n=20 addr=0x00380050 data=0x01010101
+[MON][DMA_SRAM_WR][575000] n=21 addr=0x00380054 data=0x01010101
+[MON][DMA_SRAM_WR][595000] n=22 addr=0x00380058 data=0x01010101
+[MON][DMA_SRAM_WR][615000] n=23 addr=0x0038005c data=0x01010101
+[MON][DMA_SRAM_WR][915000] n=36 addr=0x00000000 data=0x80808080
+[MON][DMA_SRAM_WR][935000] n=37 addr=0x00000004 data=0x80808180
+[MON][DMA_SRAM_WR][955000] n=38 addr=0x00000008 data=0x80808080
+[MON][DMA_SRAM_WR][975000] n=39 addr=0x0000000c data=0x80808080
+[MON][DMA_SRAM_WR][995000] n=40 addr=0x00000010 data=0x80808180
+[MON][DMA_SRAM_WR][1015000] n=41 addr=0x00000014 data=0x80808080
+[MON][DMA_SRAM_WR][1035000] n=42 addr=0x00000018 data=0x80808080
+[MON][DMA_SRAM_WR][1055000] n=43 addr=0x0000001c data=0x80808180
+[MON][DMA_SRAM_WR][1075000] n=44 addr=0x00000020 data=0x80808080
+[MON][DMA_SRAM_WR][1095000] n=45 addr=0x00000024 data=0x80808080
+[MON][DMA_SRAM_WR][1115000] n=46 addr=0x00000028 data=0x80808180
+[MON][DMA_SRAM_WR][1135000] n=47 addr=0x0000002c data=0x80808080
+[MON][FILTER][3595000] n=0 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=0 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3605000] n=1 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=1 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3615000] n=2 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=2 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3625000] n=3 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=3 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3635000] n=4 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=4 rd1=0 icg0=1 k0=3 ft0=36
+[MON][LB_IN][3635000] n=0 data=0x80808080
+[MON][FILTER][3645000] n=5 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=5 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3655000] n=6 tagX=2 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=6 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3665000] n=7 tagX=2 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=7 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3675000] n=8 tagX=2 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=8 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3685000] n=9 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=9 rd1=0 icg0=1 k0=3 ft0=36
+[MON][LB_IN][3685000] n=1 data=0x80808080
+[MON][FILTER][3695000] n=10 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=10 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3705000] n=11 tagX=0 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=11 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3715000] n=12 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=12 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3725000] n=13 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=13 rd1=0 icg0=1 k0=3 ft0=36
+[MON][FILTER][3735000] n=14 tagX=1 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=14 rd1=0 icg0=1 k0=3 ft0=36
+[MON][LB_IN][3735000] n=2 data=0x80808080
+[MON][FILTER][3745000] n=15 tagX=2 data=0x01010101 sel=0 wb0_fd=0x01010101 wb1_fd=0x00000000 sram_w0=0x01010101 wb0_w0=0x01010101 wb1_w0=0xxxxxxxxx rd0=15 rd1=0 icg0=1 k0=3 ft0=36
+[MON][LB_IN][3785000] n=3 data=0x80808080
+[MON][LB_IN][3835000] n=4 data=0x80808080
+[MON][LB_IN][3885000] n=5 data=0x81818181
+[MON][LB_IN][3935000] n=6 data=0x80808080
+[MON][LB_IN][3985000] n=7 data=0x80808080
+[MON][LB_IN][4035000] n=8 data=0x80808080
+[IFMAP_DBG][4045000] cnt=0 ow=0 oy=0 tap_y=0 tap_x=0 tagX=0 tagY=0 lb_v=0 glb_r=1 pe00=2 pe10=2 pe20=2 pe30=0
+[MON][LB_IN][4085000] n=9 data=0x80808080
+[MON][LB_IN][4135000] n=10 data=0x80808080
+[MON][LB_IN][4185000] n=11 data=0x80808080
+[MON][IFMAP][4195000] n=0 cnt=0 tagX=0 data=0x80808080
+[MON][IFMAP][4205000] n=1 cnt=1 tagX=0 data=0x80808080
+[MON][IFMAP][4215000] n=2 cnt=2 tagX=0 data=0x80808080
+[MON][IFMAP][4225000] n=3 cnt=3 tagX=0 data=0x80808080
+[MON][IFMAP][4235000] n=4 cnt=4 tagX=0 data=0x81818181
+[MON][IFMAP][4245000] n=5 cnt=5 tagX=0 data=0x80808080
+[MON][IFMAP][4255000] n=6 cnt=6 tagX=0 data=0x80808080
+[MON][IFMAP][4265000] n=7 cnt=7 tagX=0 data=0x80808080
+[MON][IFMAP][4275000] n=8 cnt=8 tagX=0 data=0x80808080
+[MON][IFMAP][4285000] n=9 cnt=9 tagX=1 data=0x80808080
+[MON][IFMAP][4295000] n=10 cnt=10 tagX=1 data=0x80808080
+[MON][IFMAP][4305000] n=11 cnt=11 tagX=1 data=0x80808080
+[MON][IFMAP][4315000] n=12 cnt=12 tagX=1 data=0x81818181
+[MON][IFMAP][4325000] n=13 cnt=13 tagX=1 data=0x80808080
+[MON][IFMAP][4335000] n=14 cnt=14 tagX=1 data=0x80808080
+[MON][IFMAP][4345000] n=15 cnt=15 tagX=1 data=0x80808080
+[MON][IFMAP][4355000] n=16 cnt=16 tagX=1 data=0x80808080
+[MON][IFMAP][4365000] n=17 cnt=17 tagX=1 data=0x80808080
+[MON][IPSUM][4375000] n=0 tagX=0 lane=0
+[MON][IPSUM][4385000] n=1 tagX=0 lane=1
+[MON][IPSUM][4395000] n=2 tagX=0 lane=2
+[MON][IPSUM][4405000] n=3 tagX=0 lane=3
+[MON][IPSUM][4415000] n=4 tagX=1 lane=0
+[MON][IPSUM][4425000] n=5 tagX=1 lane=1
+[MON][IPSUM][4435000] n=6 tagX=1 lane=2
+[MON][IPSUM][4445000] n=7 tagX=1 lane=3
+[MON][OPSUM][4495000] n=0 tagX=0 lane=0 data=4
+[MON][OPSUM][4505000] n=1 tagX=0 lane=1 data=4
+[MON][OPSUM][4515000] n=2 tagX=0 lane=2 data=4
+[MON][OPSUM][4525000] n=3 tagX=0 lane=3 data=4
+[MON][OPSUM][4535000] n=4 tagX=1 lane=0 data=4
+[MON][OPSUM][4545000] n=5 tagX=1 lane=1 data=4
+[MON][OPSUM][4555000] n=6 tagX=1 lane=2 data=4
+[MON][ACT][4555000] n=0 data=0x84848484
+[MON][OPSUM][4565000] n=7 tagX=1 lane=3 data=4
+[MON][ACT][4645000] n=1 data=0x84848484
+[MON][DRAM_ST][4795000] n=0 addr=0x00200000 data=0x84848484
+[MON][DRAM_ST][4815000] n=1 addr=0x00200004 data=0x84848484
+   HALTED at 4845000
+== Output region (DRAM 0x0020_0000 .. +8 bytes) ==
+   word[0] = 0x84848484
+   word[1] = 0x84848484
+== >>>>>>>>>>>  MICRO GOLDEN MATCH PASS  <<<<<<<<<<< ==
+$finish called from file "NPU_top_tb.sv", line 241.
+$finish at simulation time              4945000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 4945000 ps
+CPU Time:      0.210 seconds;       Data structure size:   1.7Mb
+Tue Jun  2 17:17:46 2026

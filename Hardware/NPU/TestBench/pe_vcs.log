@@ -1,0 +1,79 @@
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 23:59:06 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../PE_Array/PE.sv'
+Parsing included file '../define.svh'.
+Back to file '../PE_Array/PE.sv'.
+Parsing design file 'PE_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'PE_tb.sv'.
+Top Level Modules:
+       PE_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module PE_tb
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_pe_unit ]; then chmod a-x ../simv_pe_unit; fi
+g++  -o ../simv_pe_unit      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_pe_unit.daidir -Wl,-rpath=./simv_pe_unit.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _39834_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+../simv_pe_unit up to date
+CPU time: .228 seconds to compile + .148 seconds to elab + .160 seconds to link
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 23:59 2026
+== PE single-unit testbench (instrumented) ==
+-- case 'all+1 weights'
+     reset released, PE_en=1
+     WEIGHT reached, feeding 3 filter words
+     IF reached, feeding 3 ifmap words
+     COMPUTE reached, feeding ipsum
+     SEND reached, capturing opsum
+     PASS  opsum = 12
+-- case 'zero ifmap'
+     reset released, PE_en=1
+     WEIGHT reached, feeding 3 filter words
+     IF reached, feeding 3 ifmap words
+     COMPUTE reached, feeding ipsum
+     SEND reached, capturing opsum
+     PASS  opsum = 1000
+-- case 'neg weights'
+     reset released, PE_en=1
+     WEIGHT reached, feeding 3 filter words
+     IF reached, feeding 3 ifmap words
+     COMPUTE reached, feeding ipsum
+     SEND reached, capturing opsum
+     PASS  opsum = 38
+-- case 'mixed'
+     reset released, PE_en=1
+     WEIGHT reached, feeding 3 filter words
+     IF reached, feeding 3 ifmap words
+     COMPUTE reached, feeding ipsum
+     SEND reached, capturing opsum
+     PASS  opsum = 448
+== PE_tb done: 4 passed, 0 failed ==
+$finish called from file "PE_tb.sv", line 149.
+$finish at simulation time               520000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 520000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 23:59:08 2026

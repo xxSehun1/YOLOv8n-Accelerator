@@ -3,6 +3,7 @@ module PE (
     input clk,
     input rst,
     input PE_en,
+    input tile_start,
     input [`CONFIG_SIZE-1:0] i_config,
     input [`DATA_BITS-1:0] ifmap,
     input [`DATA_BITS-1:0] filter,
@@ -29,8 +30,10 @@ module PE (
 
     logic [2:0] state, next_state;
 
-    logic [4:0] out_ch_num; 
-    logic [`DATA_BITS-1:0] w_buf [0:31][0:2]; 
+    logic [4:0] out_ch_num;
+    logic [3:0] kernel_size;
+    logic [3:0] stride_step;
+    logic [`DATA_BITS-1:0] w_buf [0:31][0:2];
     logic [`DATA_BITS-1:0] out_buf [0:31];
     logic [`DATA_BITS-1:0] if_reg [0:2];
 
@@ -41,23 +44,25 @@ module PE (
     logic [4:0] op_ch_cnt;
     logic is_first;
 
-    logic [`DATA_BITS-1:0] mac_val; 
+    logic [`DATA_BITS-1:0] mac_val;
+    logic [3:0] if_need;
+
+    assign if_need = is_first ? kernel_size : stride_step;
 
     // Next state logic
     always_comb begin
-        next_state = state; 
+        next_state = state;
         case (state)
             IDLE: begin
                 if (PE_en) next_state = WEIGHT;
             end
             WEIGHT: begin
-                if (filter_valid && filter_ready && w_col_cnt == 2 && w_ch_cnt == out_ch_num)
+                if (filter_valid && filter_ready && w_col_cnt == kernel_size - 1 && w_ch_cnt == out_ch_num)
                     next_state = IF;
             end
             IF: begin
                 if (ifmap_valid && ifmap_ready) begin
-                    if (is_first && if_cnt == 2) next_state = COMPUTE;
-                    else if (!is_first && if_cnt == 0) next_state = COMPUTE;
+                    if (if_cnt == if_need - 1) next_state = COMPUTE;
                 end
             end
             COMPUTE: begin
@@ -83,16 +88,27 @@ module PE (
             ip_ch_cnt <= 0; 
             op_ch_cnt <= 0;
             out_ch_num <= 0;
+            kernel_size <= 4'd3;
+            stride_step <= 4'd1;
+        end else if (tile_start && (state != IDLE) && (state != WEIGHT)) begin
+            state <= IF;
+            is_first <= 1'b1;
+            if_cnt <= 0;
+            ip_ch_cnt <= 0;
+            op_ch_cnt <= 0;
         end else begin
             state <= next_state;
 
             case (state)
                 IDLE: begin
                     if (PE_en) begin
-                        out_ch_num <= {2'b00, i_config[9:7]}; 
+                        out_ch_num <= (i_config[22:18] != 5'd0) ? i_config[22:18]
+                                                                 : {2'b00, i_config[9:7]};
+                        kernel_size <= (i_config[13:10] == 4'd0) ? 4'd3 : i_config[13:10];
+                        stride_step <= (i_config[17:14] == 4'd0) ? 4'd1 : i_config[17:14];
                         is_first <= 1'b1;
-                        w_ch_cnt <= 0; 
-                        w_col_cnt <= 0; 
+                        w_ch_cnt <= 0;
+                        w_col_cnt <= 0;
                         if_cnt <= 0;
                     end
                 end
@@ -100,7 +116,7 @@ module PE (
                 WEIGHT: begin
                     if (filter_valid && filter_ready) begin
                         w_buf[w_ch_cnt][w_col_cnt] <= filter;
-                        if (w_col_cnt == 2) begin
+                        if (w_col_cnt == kernel_size - 1) begin
                             w_col_cnt <= 0;
                             if (w_ch_cnt == out_ch_num) w_ch_cnt <= 0;
                             else w_ch_cnt <= w_ch_cnt + 1;
@@ -115,13 +131,11 @@ module PE (
                         // shift ifmap
                         if_reg[0] <= if_reg[1];
                         if_reg[1] <= if_reg[2];
-                        if_reg[2] <= ifmap; 
+                        if_reg[2] <= ifmap;
 
-                        if (is_first && if_cnt == 2) begin
-                            is_first <= 1'b0; 
+                        if (if_cnt == if_need - 1) begin
+                            is_first <= 1'b0;
                             if_cnt <= 0;
-                        end else if (!is_first && if_cnt == 0) begin
-                            if_cnt <= 0;       
                         end else begin
                             if_cnt <= if_cnt + 1;
                         end
@@ -151,20 +165,25 @@ module PE (
     logic signed [31:0] temp_mac; 
     logic signed [8:0] s_ifmap;
     logic signed [7:0] s_weight;
+    logic [1:0] if_idx;
 
     always_comb begin
-        temp_mac = $signed(ipsum); 
-        
-        for (int i = 0; i < 3; i = i + 1) begin
-            for (int j = 0; j < 4; j = j + 1) begin
-                // sub 128 for zero point
-                s_ifmap = $signed({1'b0, if_reg[i][j*8 +: 8]}) - 9'sd128; 
-                s_weight = $signed(w_buf[ip_ch_cnt][i][j*8 +: 8]);
-                
-                temp_mac = temp_mac + (s_ifmap * s_weight);
+        temp_mac = $signed(ipsum);
+
+        if (state == COMPUTE) begin
+            for (int i = 0; i < 3; i = i + 1) begin
+                for (int j = 0; j < 4; j = j + 1) begin
+                    if (i < kernel_size) begin
+                        if_idx = 2'd3 - kernel_size[1:0] + i[1:0];
+                        // sub 128 for zero point
+                        s_ifmap = $signed({1'b0, if_reg[if_idx][j*8 +: 8]}) - 9'sd128;
+                        s_weight = $signed(w_buf[ip_ch_cnt][i][j*8 +: 8]);
+                        temp_mac = temp_mac + (s_ifmap * s_weight);
+                    end
+                end
             end
         end
-        mac_val = temp_mac; 
+        mac_val = temp_mac;
     end
 
     assign filter_ready = (state == WEIGHT);

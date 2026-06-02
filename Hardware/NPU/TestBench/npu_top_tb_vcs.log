@@ -1,0 +1,21 @@
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 00:35 2026
+== NPU_top integration smoke test (1x1 synthetic conv) ==
+   start asserted at 105000
+   HALTED at 4165000
+== Output region (DRAM 0x0020_0000 .. +16 bytes) ==
+   word[0] = 0x00000000  expect 0x84848484
+   word[1] = 0x00000000  expect 0x84848484
+   word[2] = 0x00000000  expect 0x84848484
+   word[3] = 0x00000000  expect 0x84848484
+== sanity: 0 / 4 output words match golden ==
+== >>>>>>>>>>>  PARTIAL / MISMATCH  <<<<<<<<<<< ==
+$finish called from file "NPU_top_tb.sv", line 184.
+$finish at simulation time              4265000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 4265000 ps
+CPU Time:      0.190 seconds;       Data structure size:   1.7Mb
+Tue Jun  2 00:35:12 2026

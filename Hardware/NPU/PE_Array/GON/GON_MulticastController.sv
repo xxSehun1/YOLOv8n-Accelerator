@@ -41,7 +41,10 @@ module GON_MulticastController #(
 
     
     assign valid_out = judge ? valid_in : 1'b0;
-    assign ready_out = judge ? ready_in : 1'b1;
+    // Output-side routing must not acknowledge non-selected PEs.  Otherwise
+    // a PE in SEND can drop its opsum while the controller is draining a
+    // different spatial column.
+    assign ready_out = judge ? ready_in : 1'b0;
     assign id = id_reg;
 
 

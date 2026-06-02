@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from mapping import HW, _gen_config
+from mapping import HW
 
 XID_BITS     = 5
 YID_BITS     = 5
@@ -68,25 +68,64 @@ def pack(cfg):
     return lines
 
 
+def gen_spatial_config(hw, active_cols=NUMS_PE_COL):
+    """Generate the true-spatial Gate-F scan config.
+
+    Active PE set 0 uses rows 0..2 for the 3 kernel rows and columns 0..15
+    for output spatial columns.  Ifmap routing is no longer diagonal:
+
+      ifmap tag_Y = kernel row, tag_X = spatial column
+
+    Filter routing still broadcasts each kernel-row weight stream to all
+    active spatial columns.  Ipsum enters at the bottom row and opsum exits
+    from the top row, both selected by the spatial column XID.
+    """
+    dx = hw.default_xid
+    dy = hw.default_yid
+    active_cols = min(active_cols, NUMS_PE_COL)
+
+    cfg = {
+        "ifmap_xid":  [dx] * NUM_PE,
+        "filter_xid": [dx] * NUM_PE,
+        "ipsum_xid":  [dx] * NUM_PE,
+        "opsum_xid":  [dx] * NUM_PE,
+        "ifmap_yid":  [dy] * NUMS_PE_ROW,
+        "filter_yid": [dy] * NUMS_PE_ROW,
+        "ipsum_yid":  [dy] * NUMS_PE_ROW,
+        "opsum_yid":  [dy] * NUMS_PE_ROW,
+        "ln_config":  0,
+        "pe_en":      0,
+    }
+
+    for row in range(3):
+        cfg["ifmap_yid"][row] = row
+        cfg["filter_yid"][row] = 0
+    cfg["ipsum_yid"][2] = 0
+    cfg["opsum_yid"][0] = 0
+
+    for col in range(active_cols):
+        for row in range(3):
+            idx = row * NUMS_PE_COL + col
+            cfg["ifmap_xid"][idx] = col
+            cfg["filter_xid"][idx] = row
+            cfg["pe_en"] |= 1 << idx
+        cfg["ipsum_xid"][2 * NUMS_PE_COL + col] = col
+        cfg["opsum_xid"][0 * NUMS_PE_COL + col] = col
+
+    # Chain row2 -> row1 -> row0 inside the first 3-row PE set.
+    cfg["ln_config"] = (1 << 0) | (1 << 1)
+    return cfg
+
+
 def main():
     ap = argparse.ArgumentParser(description="Generate shared_config.hex from mapping geometry.")
     ap.add_argument("--out", default="../Hardware/NPU/TestBench/shared_config.hex")
     args = ap.parse_args()
 
     hw  = HW()
-    # active_sets=1: PingPong_Ctrl v3 uses T_H=T_W=1, so only PE set 0 receives
-    # filter data.  Rows beyond set 0 (rows 3-14) must get DEFAULT ifmap/ipsum/
-    # opsum XIDs so they never block the GIN while stuck in WEIGHT.
-    #
-    # active_cols=E=2: the ipsum loop in PingPong_Ctrl covers cnt_p_row=0..E-1,
-    # so only the LN chains for PE columns 0 and 1 are activated.  PE columns
-    # >= 2 must get DEFAULT ifmap/ipsum/opsum XIDs: without this they receive
-    # real ifmap XIDs (2,3,...) during S_IFMAP, get stuck in COMPUTE after the
-    # first pass (the LN chain for those columns never fires), and block the
-    # second S_IFMAP when PingPong re-sends the same ifmap tags.
-    cfg = _gen_config(hw, active_sets=1, active_cols=2)
+    cfg = gen_spatial_config(hw, active_cols=NUMS_PE_COL)
 
-    print(f"LN_CONFIG  = 0x{cfg['ln_config']:X}  (expect 0x36DB for 5 sets × 3 rows)")
+    print(f"LN_CONFIG  = 0x{cfg['ln_config']:X}  (true-spatial first set)")
     print(f"PE_EN mask = 0x{cfg['pe_en']:X}")
 
     # Show first few filter XID/YID assignments for sanity.

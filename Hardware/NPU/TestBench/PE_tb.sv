@@ -38,6 +38,7 @@ module PE_tb;
 
     PE dut (
         .clk(clk), .rst(rst), .PE_en(PE_en), .i_config(i_config),
+        .tile_start(1'b0),
         .ifmap(ifmap), .filter(filter), .ipsum(ipsum),
         .ifmap_valid(ifmap_valid), .filter_valid(filter_valid),
         .ipsum_valid(ipsum_valid), .opsum_ready(opsum_ready),
@@ -107,14 +108,19 @@ module PE_tb;
             ipsum_valid = 1; ipsum = ips;
             `EXPECT(ipsum_ready === 1'b1, "IF -> COMPUTE (ipsum_ready)")
             $display("     COMPUTE reached, feeding ipsum");
-            @(posedge clk); ipsum_valid = 0;
+            @(posedge clk);
+            @(negedge clk);
+            ipsum_valid = 0;
+            ipsum = 0;
 
             // SEND.
             opsum_ready = 1;
             `EXPECT(opsum_valid === 1'b1, "COMPUTE -> SEND (opsum_valid)")
             $display("     SEND reached, capturing opsum");
             got = opsum;
-            @(posedge clk); opsum_ready = 0;
+            @(posedge clk);
+            @(negedge clk);
+            opsum_ready = 0;
 
             // Check.
             expected = mac_ref(w0, w1, w2, x0, x1, x2, ips);

@@ -1,0 +1,261 @@
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 16:36 2026
+[TB] loaded input bytes=1228800
+[TB] loaded weight bytes=1277680
+[TB] loaded golden bytes=1638400
+== Gate F TRUE systolic full first-CONV check ==
+[HB][55000] cyc=0 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[TB] start pulsed at 105000
+[HB][1000055000] cyc=100000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[HB][2000055000] cyc=200000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[HB][3000055000] cyc=300000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[HB][4000055000] cyc=400000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[HB][5000055000] cyc=500000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[HB][6000055000] cyc=600000 pc=0 ppc_st=0 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=0 opsum=0 halted=0
+[MON][FILTER][6149225000] n=0 tagX=0 data=0x00fefd02
+[MON][FILTER][6149235000] n=1 tagX=0 data=0x00040505
+[MON][FILTER][6149245000] n=2 tagX=0 data=0x00f8faf9
+[MON][FILTER][6149255000] n=3 tagX=1 data=0x00f3f5f6
+[MON][FILTER][6149265000] n=4 tagX=1 data=0x000d0f0e
+[MON][LB_IN][6149265000] n=0 data=0x8005f55f
+[MON][FILTER][6149275000] n=5 tagX=1 data=0x00040403
+[MON][FILTER][6149285000] n=6 tagX=2 data=0x00fcfefd
+[MON][FILTER][6149295000] n=7 tagX=2 data=0x00020505
+[MON][FILTER][6149305000] n=8 tagX=2 data=0x0008090c
+[MON][FILTER][6149315000] n=9 tagX=0 data=0x00fe00fe
+[MON][LB_IN][6149315000] n=1 data=0x80f42082
+[MON][FILTER][6149325000] n=10 tagX=0 data=0x00dcddda
+[MON][FILTER][6149335000] n=11 tagX=0 data=0x00e9e9e5
+[MON][LB_IN][6149365000] n=2 data=0x8016dcc2
+[MON][LB_IN][6149415000] n=3 data=0x807404d9
+[MON][LB_IN][6149465000] n=4 data=0x805848cf
+[MON][LB_IN][6149515000] n=5 data=0x80ad79eb
+[MON][LB_IN][6149565000] n=6 data=0x8025120f
+[MON][LB_IN][6149615000] n=7 data=0x809b52a3
+[MON][LB_IN][6149665000] n=8 data=0x80601521
+[MON][LB_IN][6149715000] n=9 data=0x805b14d7
+[MON][LB_IN][6149765000] n=10 data=0x800f7cd9
+[MON][LB_IN][6149815000] n=11 data=0x80516a82
+[MON][OPSUM][6213795000] n=0 ow=0 oc=0 data=360
+[MON][OPSUM][6213805000] n=1 ow=0 oc=1 data=4171
+[MON][OPSUM][6213815000] n=2 ow=0 oc=2 data=-3764
+[MON][OPSUM][6213825000] n=3 ow=0 oc=3 data=9896
+[MON][OPSUM][6213835000] n=4 ow=0 oc=4 data=690
+[MON][OPSUM][6213845000] n=5 ow=0 oc=5 data=-12062
+[MON][OPSUM][6213855000] n=6 ow=0 oc=6 data=-4157
+[MON][ACT][6213855000] n=0 data=0x88808480
+[MON][OPSUM][6213865000] n=7 ow=0 oc=7 data=160
+[MON][OPSUM][6213875000] n=8 ow=0 oc=8 data=1283
+[MON][OPSUM][6213885000] n=9 ow=0 oc=9 data=-1894
+[MON][OPSUM][6213895000] n=10 ow=0 oc=10 data=-1277
+[MON][OPSUM][6213905000] n=11 ow=0 oc=11 data=8484
+[MON][ACT][6213905000] n=1 data=0x80808082
+[MON][OPSUM][6213915000] n=12 ow=0 oc=12 data=492
+[MON][OPSUM][6213925000] n=13 ow=0 oc=13 data=1193
+[MON][OPSUM][6213935000] n=14 ow=0 oc=14 data=-7953
+[MON][OPSUM][6213945000] n=15 ow=0 oc=15 data=2081
+[MON][ACT][6213955000] n=2 data=0x89808081
+[MON][ACT][6214005000] n=3 data=0x83808081
+[MON][ACT][6214585000] n=4 data=0x80819080
+[MON][ACT][6214635000] n=5 data=0x80808480
+[MON][ACT][6214685000] n=6 data=0x8080868b
+[MON][ACT][6214735000] n=7 data=0x85808081
+[MON][ACT][6215315000] n=8 data=0x86858080
+[MON][ACT][6215365000] n=9 data=0x88898081
+[MON][ACT][6215415000] n=10 data=0x80808081
+[MON][ACT][6215465000] n=11 data=0x80908081
+[MON][ACT][6216045000] n=12 data=0x95878f80
+[MON][ACT][6216095000] n=13 data=0x80808082
+[MON][ACT][6216145000] n=14 data=0x80808084
+[MON][ACT][6216195000] n=15 data=0x8c878382
+[DBG][TARGET_ACT][6519545000] n=1328 pixel=332 group=0 data=0x918d8d80 exp=0x918d8d80 ppu_in=-1796 ppu_out=0x80
+[DBG][TARGET_ACT][6519595000] n=1329 pixel=332 group=1 data=0x80818080 exp=0x80818080 ppu_in=32618 ppu_out=0x9f
+[DBG][TARGET_OPSUM][6519605000] n=5324 pixel=332 row=1 ow=0 oc=12 data=1144
+[DBG][TARGET_OPSUM][6519615000] n=5325 pixel=332 row=1 ow=0 oc=13 data=10522
+[DBG][TARGET_OPSUM][6519625000] n=5326 pixel=332 row=1 ow=0 oc=14 data=-8997
+[DBG][TARGET_OPSUM][6519635000] n=5327 pixel=332 row=1 ow=0 oc=15 data=14529
+[DBG][TARGET_WIN][6519645000] n=2997 tagX=0 data=0x80774f7f
+[DBG][TARGET_ACT][6519645000] n=1330 pixel=332 group=2 data=0x8080839f exp=0x8080839f ppu_in=2690 ppu_out=0x82
+[DBG][TARGET_WIN][6519655000] n=2998 tagX=0 data=0x803c6ef1
+[DBG][TARGET_WIN][6519665000] n=2999 tagX=0 data=0x801ed63a
+[DBG][TARGET_WIN][6519675000] n=3000 tagX=1 data=0x807c3038
+[DBG][TARGET_WIN][6519685000] n=3001 tagX=1 data=0x801cdbd5
+[DBG][TARGET_WIN][6519695000] n=3002 tagX=1 data=0x8040007d
+[DBG][TARGET_ACT][6519695000] n=1331 pixel=332 group=3 data=0x90808982 exp=0x90808982 ppu_in=-7016 ppu_out=0x80
+[DBG][TARGET_WIN][6519705000] n=3003 tagX=2 data=0x804c687b
+[DBG][TARGET_WIN][6519715000] n=3004 tagX=2 data=0x80968ec2
+[DBG][TARGET_WIN][6519725000] n=3005 tagX=2 data=0x802db8a5
+[DBG][TARGET_OPSUM][6520215000] n=5328 pixel=333 row=1 ow=0 oc=0 data=4253
+[DBG][TARGET_OPSUM][6520225000] n=5329 pixel=333 row=1 ow=0 oc=1 data=9423
+[DBG][TARGET_OPSUM][6520235000] n=5330 pixel=333 row=1 ow=0 oc=2 data=-6369
+[DBG][TARGET_OPSUM][6520245000] n=5331 pixel=333 row=1 ow=0 oc=3 data=-36391
+[DBG][TARGET_OPSUM][6520255000] n=5332 pixel=333 row=1 ow=0 oc=4 data=-370
+[DBG][TARGET_ACT][6520275000] n=1332 pixel=333 group=0 data=0x80808981 exp=0x80808981 ppu_in=1476 ppu_out=0x81
+[DBG][TARGET_ACT][6520325000] n=1333 pixel=333 group=1 data=0x80809881 exp=0x80809881 ppu_in=15206 ppu_out=0x8e
+[DBG][TARGET_ACT][6520375000] n=1334 pixel=333 group=2 data=0x8080888e exp=0x8080888e ppu_in=328 ppu_out=0x80
+[HB][7000055000] cyc=700000 pc=3 ppc_st=6 tile_base=264 tile_w=1 tile_start=0 ifcnt=0 oy=2 opsum=0 halted=0
+[HB][8000055000] cyc=800000 pc=3 ppc_st=5 tile_base=7 tile_w=1 tile_start=0 ifcnt=0 oy=6 opsum=0 halted=0
+[HB][9000055000] cyc=900000 pc=3 ppc_st=6 tile_base=156 tile_w=1 tile_start=0 ifcnt=0 oy=9 opsum=1 halted=0
+[HB][10000055000] cyc=1000000 pc=3 ppc_st=6 tile_base=306 tile_w=1 tile_start=0 ifcnt=0 oy=12 opsum=0 halted=0
+[HB][11000055000] cyc=1100000 pc=3 ppc_st=5 tile_base=49 tile_w=1 tile_start=0 ifcnt=0 oy=16 opsum=0 halted=0
+[HB][12000055000] cyc=1200000 pc=3 ppc_st=6 tile_base=198 tile_w=1 tile_start=0 ifcnt=0 oy=19 opsum=5 halted=0
+[HB][13000055000] cyc=1300000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=23 opsum=0 halted=0
+[HB][14000055000] cyc=1400000 pc=3 ppc_st=5 tile_base=91 tile_w=1 tile_start=0 ifcnt=0 oy=26 opsum=0 halted=0
+[HB][15000055000] cyc=1500000 pc=3 ppc_st=6 tile_base=240 tile_w=1 tile_start=0 ifcnt=0 oy=29 opsum=9 halted=0
+[HB][16000055000] cyc=1600000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=33 opsum=0 halted=0
+[HB][17000055000] cyc=1700000 pc=3 ppc_st=6 tile_base=133 tile_w=1 tile_start=0 ifcnt=0 oy=36 opsum=0 halted=0
+[HB][18000055000] cyc=1800000 pc=3 ppc_st=6 tile_base=282 tile_w=1 tile_start=0 ifcnt=0 oy=39 opsum=13 halted=0
+[HB][19000055000] cyc=1900000 pc=3 ppc_st=6 tile_base=25 tile_w=1 tile_start=0 ifcnt=0 oy=43 opsum=2 halted=0
+[HB][20000055000] cyc=2000000 pc=3 ppc_st=6 tile_base=175 tile_w=1 tile_start=0 ifcnt=0 oy=46 opsum=0 halted=0
+[HB][21000055000] cyc=2100000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=50 opsum=0 halted=0
+[HB][22000055000] cyc=2200000 pc=3 ppc_st=6 tile_base=67 tile_w=1 tile_start=0 ifcnt=0 oy=53 opsum=6 halted=0
+[HB][23000055000] cyc=2300000 pc=3 ppc_st=6 tile_base=217 tile_w=1 tile_start=0 ifcnt=0 oy=56 opsum=0 halted=0
+[HB][24000055000] cyc=2400000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=60 opsum=0 halted=0
+[HB][25000055000] cyc=2500000 pc=3 ppc_st=6 tile_base=109 tile_w=1 tile_start=0 ifcnt=0 oy=63 opsum=10 halted=0
+[HB][26000055000] cyc=2600000 pc=3 ppc_st=6 tile_base=259 tile_w=1 tile_start=0 ifcnt=0 oy=66 opsum=0 halted=0
+[HB][27000055000] cyc=2700000 pc=3 ppc_st=6 tile_base=2 tile_w=1 tile_start=0 ifcnt=0 oy=70 opsum=0 halted=0
+[HB][28000055000] cyc=2800000 pc=3 ppc_st=6 tile_base=151 tile_w=1 tile_start=0 ifcnt=0 oy=73 opsum=14 halted=0
+[HB][29000055000] cyc=2900000 pc=3 ppc_st=6 tile_base=301 tile_w=1 tile_start=0 ifcnt=0 oy=76 opsum=0 halted=0
+[HB][30000055000] cyc=3000000 pc=3 ppc_st=6 tile_base=44 tile_w=1 tile_start=0 ifcnt=0 oy=80 opsum=0 halted=0
+[HB][31000055000] cyc=3100000 pc=3 ppc_st=4 tile_base=194 tile_w=1 tile_start=0 ifcnt=2 oy=83 opsum=0 halted=0
+[HB][32000055000] cyc=3200000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=87 opsum=0 halted=0
+[HB][33000055000] cyc=3300000 pc=3 ppc_st=6 tile_base=86 tile_w=1 tile_start=0 ifcnt=0 oy=90 opsum=0 halted=0
+[HB][34000055000] cyc=3400000 pc=3 ppc_st=4 tile_base=236 tile_w=1 tile_start=0 ifcnt=6 oy=93 opsum=0 halted=0
+[HB][35000055000] cyc=3500000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=97 opsum=0 halted=0
+[HB][36000055000] cyc=3600000 pc=3 ppc_st=6 tile_base=128 tile_w=1 tile_start=0 ifcnt=0 oy=100 opsum=0 halted=0
+[HB][37000055000] cyc=3700000 pc=3 ppc_st=5 tile_base=278 tile_w=1 tile_start=0 ifcnt=0 oy=103 opsum=0 halted=0
+[HB][38000055000] cyc=3800000 pc=3 ppc_st=6 tile_base=20 tile_w=1 tile_start=1 ifcnt=0 oy=107 opsum=15 halted=0
+[HB][39000055000] cyc=3900000 pc=3 ppc_st=6 tile_base=170 tile_w=1 tile_start=0 ifcnt=0 oy=110 opsum=0 halted=0
+[HB][40000055000] cyc=4000000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=114 opsum=0 halted=0
+[HB][41000055000] cyc=4100000 pc=3 ppc_st=4 tile_base=63 tile_w=1 tile_start=0 ifcnt=3 oy=117 opsum=0 halted=0
+[HB][42000055000] cyc=4200000 pc=3 ppc_st=6 tile_base=212 tile_w=1 tile_start=0 ifcnt=0 oy=120 opsum=0 halted=0
+[HB][43000055000] cyc=4300000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=124 opsum=0 halted=0
+[HB][44000055000] cyc=4400000 pc=3 ppc_st=4 tile_base=105 tile_w=1 tile_start=0 ifcnt=7 oy=127 opsum=0 halted=0
+[HB][45000055000] cyc=4500000 pc=3 ppc_st=6 tile_base=254 tile_w=1 tile_start=0 ifcnt=0 oy=130 opsum=0 halted=0
+[HB][46000055000] cyc=4600000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=134 opsum=0 halted=0
+[HB][47000055000] cyc=4700000 pc=3 ppc_st=5 tile_base=147 tile_w=1 tile_start=0 ifcnt=0 oy=137 opsum=0 halted=0
+[HB][48000055000] cyc=4800000 pc=3 ppc_st=6 tile_base=296 tile_w=1 tile_start=0 ifcnt=0 oy=140 opsum=0 halted=0
+[HB][49000055000] cyc=4900000 pc=3 ppc_st=6 tile_base=39 tile_w=1 tile_start=0 ifcnt=0 oy=144 opsum=0 halted=0
+[HB][50000055000] cyc=5000000 pc=3 ppc_st=5 tile_base=189 tile_w=1 tile_start=0 ifcnt=0 oy=147 opsum=0 halted=0
+[HB][51000055000] cyc=5100000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=151 opsum=0 halted=0
+[HB][52000055000] cyc=5200000 pc=3 ppc_st=6 tile_base=81 tile_w=1 tile_start=0 ifcnt=0 oy=154 opsum=0 halted=0
+[HB][53000055000] cyc=5300000 pc=3 ppc_st=5 tile_base=231 tile_w=1 tile_start=0 ifcnt=0 oy=157 opsum=0 halted=0
+[HB][54000055000] cyc=5400000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=161 opsum=0 halted=0
+[HB][55000055000] cyc=5500000 pc=3 ppc_st=6 tile_base=123 tile_w=1 tile_start=0 ifcnt=0 oy=164 opsum=0 halted=0
+[HB][56000055000] cyc=5600000 pc=3 ppc_st=5 tile_base=273 tile_w=1 tile_start=0 ifcnt=0 oy=167 opsum=0 halted=0
+[HB][57000055000] cyc=5700000 pc=3 ppc_st=5 tile_base=16 tile_w=1 tile_start=0 ifcnt=0 oy=171 opsum=0 halted=0
+[HB][58000055000] cyc=5800000 pc=3 ppc_st=6 tile_base=165 tile_w=1 tile_start=0 ifcnt=0 oy=174 opsum=0 halted=0
+[HB][59000055000] cyc=5900000 pc=3 ppc_st=6 tile_base=315 tile_w=1 tile_start=0 ifcnt=0 oy=177 opsum=0 halted=0
+[HB][60000055000] cyc=6000000 pc=3 ppc_st=5 tile_base=58 tile_w=1 tile_start=0 ifcnt=0 oy=181 opsum=0 halted=0
+[HB][61000055000] cyc=6100000 pc=3 ppc_st=6 tile_base=207 tile_w=1 tile_start=0 ifcnt=0 oy=184 opsum=3 halted=0
+[HB][62000055000] cyc=6200000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=188 opsum=0 halted=0
+[HB][63000055000] cyc=6300000 pc=3 ppc_st=5 tile_base=100 tile_w=1 tile_start=0 ifcnt=0 oy=191 opsum=0 halted=0
+[HB][64000055000] cyc=6400000 pc=3 ppc_st=6 tile_base=249 tile_w=1 tile_start=0 ifcnt=0 oy=194 opsum=7 halted=0
+[HB][65000055000] cyc=6500000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=198 opsum=0 halted=0
+[HB][66000055000] cyc=6600000 pc=3 ppc_st=5 tile_base=142 tile_w=1 tile_start=0 ifcnt=0 oy=201 opsum=0 halted=0
+[HB][67000055000] cyc=6700000 pc=3 ppc_st=6 tile_base=291 tile_w=1 tile_start=0 ifcnt=0 oy=204 opsum=11 halted=0
+[HB][68000055000] cyc=6800000 pc=3 ppc_st=6 tile_base=34 tile_w=1 tile_start=0 ifcnt=0 oy=208 opsum=0 halted=0
+[HB][69000055000] cyc=6900000 pc=3 ppc_st=6 tile_base=184 tile_w=1 tile_start=0 ifcnt=0 oy=211 opsum=0 halted=0
+[HB][70000055000] cyc=7000000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=215 opsum=0 halted=0
+[HB][71000055000] cyc=7100000 pc=3 ppc_st=6 tile_base=76 tile_w=1 tile_start=0 ifcnt=0 oy=218 opsum=4 halted=0
+[HB][72000055000] cyc=7200000 pc=3 ppc_st=6 tile_base=226 tile_w=1 tile_start=0 ifcnt=0 oy=221 opsum=0 halted=0
+[HB][73000055000] cyc=7300000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=225 opsum=0 halted=0
+[HB][74000055000] cyc=7400000 pc=3 ppc_st=6 tile_base=118 tile_w=1 tile_start=0 ifcnt=0 oy=228 opsum=8 halted=0
+[HB][75000055000] cyc=7500000 pc=3 ppc_st=6 tile_base=268 tile_w=1 tile_start=0 ifcnt=0 oy=231 opsum=0 halted=0
+[HB][76000055000] cyc=7600000 pc=3 ppc_st=6 tile_base=11 tile_w=1 tile_start=0 ifcnt=0 oy=235 opsum=0 halted=0
+[HB][77000055000] cyc=7700000 pc=3 ppc_st=6 tile_base=160 tile_w=1 tile_start=0 ifcnt=0 oy=238 opsum=12 halted=0
+[HB][78000055000] cyc=7800000 pc=3 ppc_st=6 tile_base=310 tile_w=1 tile_start=0 ifcnt=0 oy=241 opsum=0 halted=0
+[HB][79000055000] cyc=7900000 pc=3 ppc_st=6 tile_base=53 tile_w=1 tile_start=0 ifcnt=0 oy=245 opsum=0 halted=0
+[HB][80000055000] cyc=8000000 pc=3 ppc_st=4 tile_base=203 tile_w=1 tile_start=0 ifcnt=0 oy=248 opsum=0 halted=0
+[HB][81000055000] cyc=8100000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=252 opsum=0 halted=0
+[HB][82000055000] cyc=8200000 pc=3 ppc_st=6 tile_base=95 tile_w=1 tile_start=0 ifcnt=0 oy=255 opsum=0 halted=0
+[HB][83000055000] cyc=8300000 pc=3 ppc_st=4 tile_base=245 tile_w=1 tile_start=0 ifcnt=4 oy=258 opsum=0 halted=0
+[HB][84000055000] cyc=8400000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=262 opsum=0 halted=0
+[HB][85000055000] cyc=8500000 pc=3 ppc_st=6 tile_base=137 tile_w=1 tile_start=0 ifcnt=0 oy=265 opsum=0 halted=0
+[HB][86000055000] cyc=8600000 pc=3 ppc_st=4 tile_base=287 tile_w=1 tile_start=0 ifcnt=8 oy=268 opsum=0 halted=0
+[HB][87000055000] cyc=8700000 pc=3 ppc_st=6 tile_base=29 tile_w=1 tile_start=0 ifcnt=0 oy=272 opsum=13 halted=0
+[HB][88000055000] cyc=8800000 pc=3 ppc_st=6 tile_base=179 tile_w=1 tile_start=0 ifcnt=0 oy=275 opsum=0 halted=0
+[HB][89000055000] cyc=8900000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=279 opsum=0 halted=0
+[HB][90000055000] cyc=9000000 pc=3 ppc_st=4 tile_base=72 tile_w=1 tile_start=0 ifcnt=1 oy=282 opsum=0 halted=0
+[HB][91000055000] cyc=9100000 pc=3 ppc_st=6 tile_base=221 tile_w=1 tile_start=0 ifcnt=0 oy=285 opsum=0 halted=0
+[HB][92000055000] cyc=9200000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=289 opsum=0 halted=0
+[HB][93000055000] cyc=9300000 pc=3 ppc_st=4 tile_base=114 tile_w=1 tile_start=0 ifcnt=5 oy=292 opsum=0 halted=0
+[HB][94000055000] cyc=9400000 pc=3 ppc_st=6 tile_base=263 tile_w=1 tile_start=0 ifcnt=0 oy=295 opsum=0 halted=0
+[HB][95000055000] cyc=9500000 pc=3 ppc_st=6 tile_base=6 tile_w=1 tile_start=0 ifcnt=0 oy=299 opsum=0 halted=0
+[HB][96000055000] cyc=9600000 pc=3 ppc_st=5 tile_base=156 tile_w=1 tile_start=0 ifcnt=0 oy=302 opsum=0 halted=0
+[HB][97000055000] cyc=9700000 pc=3 ppc_st=6 tile_base=305 tile_w=1 tile_start=0 ifcnt=0 oy=305 opsum=0 halted=0
+[HB][98000055000] cyc=9800000 pc=3 ppc_st=6 tile_base=48 tile_w=1 tile_start=0 ifcnt=0 oy=309 opsum=0 halted=0
+[HB][99000055000] cyc=9900000 pc=3 ppc_st=5 tile_base=198 tile_w=1 tile_start=0 ifcnt=0 oy=312 opsum=0 halted=0
+[HB][100000055000] cyc=10000000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=316 opsum=0 halted=0
+[HB][101000055000] cyc=10100000 pc=3 ppc_st=6 tile_base=90 tile_w=1 tile_start=0 ifcnt=0 oy=319 opsum=0 halted=0
+[TB] HALT observed at 101167785000 cycle=10116774
+[RESULT] mismatch_count=0 output_words=409600
+== GATE F FULL FIRST-CONV TRUE SYSTOLIC PASS ==
+$finish called from file "NPU_gate_f_first_conv_tb.sv", line 302.
+$finish at simulation time         101167985000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 101167985000 ps
+CPU Time:   7758.780 seconds;       Data structure size:  13.1Mb
+Tue Jun  2 18:37:02 2026
+STOLIC PASS ==
+$finish called from file "NPU_gate_f_first_conv_tb.sv", line 302.
+$finish at simulation time         101167985000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 101167985000 ps
+CPU Time:   7503.910 seconds;       Data structure size:  13.1Mb
+Tue Jun  2 18:34:14 2026
+B][57000055000] cyc=5700000 pc=3 ppc_st=5 tile_base=16 tile_w=1 tile_start=0 ifcnt=0 oy=171 opsum=0 halted=0
+[HB][58000055000] cyc=5800000 pc=3 ppc_st=6 tile_base=165 tile_w=1 tile_start=0 ifcnt=0 oy=174 opsum=0 halted=0
+[HB][59000055000] cyc=5900000 pc=3 ppc_st=6 tile_base=315 tile_w=1 tile_start=0 ifcnt=0 oy=177 opsum=0 halted=0
+[HB][60000055000] cyc=6000000 pc=3 ppc_st=5 tile_base=58 tile_w=1 tile_start=0 ifcnt=0 oy=181 opsum=0 halted=0
+[HB][61000055000] cyc=6100000 pc=3 ppc_st=6 tile_base=207 tile_w=1 tile_start=0 ifcnt=0 oy=184 opsum=3 halted=0
+[HB][62000055000] cyc=6200000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=188 opsum=0 halted=0
+[HB][63000055000] cyc=6300000 pc=3 ppc_st=5 tile_base=100 tile_w=1 tile_start=0 ifcnt=0 oy=191 opsum=0 halted=0
+[HB][64000055000] cyc=6400000 pc=3 ppc_st=6 tile_base=249 tile_w=1 tile_start=0 ifcnt=0 oy=194 opsum=7 halted=0
+[HB][65000055000] cyc=6500000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=198 opsum=0 halted=0
+[HB][66000055000] cyc=6600000 pc=3 ppc_st=5 tile_base=142 tile_w=1 tile_start=0 ifcnt=0 oy=201 opsum=0 halted=0
+[HB][67000055000] cyc=6700000 pc=3 ppc_st=6 tile_base=291 tile_w=1 tile_start=0 ifcnt=0 oy=204 opsum=11 halted=0
+[HB][68000055000] cyc=6800000 pc=3 ppc_st=6 tile_base=34 tile_w=1 tile_start=0 ifcnt=0 oy=208 opsum=0 halted=0
+[HB][69000055000] cyc=6900000 pc=3 ppc_st=6 tile_base=184 tile_w=1 tile_start=0 ifcnt=0 oy=211 opsum=0 halted=0
+[HB][70000055000] cyc=7000000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=215 opsum=0 halted=0
+[HB][71000055000] cyc=7100000 pc=3 ppc_st=6 tile_base=76 tile_w=1 tile_start=0 ifcnt=0 oy=218 opsum=4 halted=0
+[HB][72000055000] cyc=7200000 pc=3 ppc_st=6 tile_base=226 tile_w=1 tile_start=0 ifcnt=0 oy=221 opsum=0 halted=0
+[HB][73000055000] cyc=7300000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=225 opsum=0 halted=0
+[HB][74000055000] cyc=7400000 pc=3 ppc_st=6 tile_base=118 tile_w=1 tile_start=0 ifcnt=0 oy=228 opsum=8 halted=0
+[HB][75000055000] cyc=7500000 pc=3 ppc_st=6 tile_base=268 tile_w=1 tile_start=0 ifcnt=0 oy=231 opsum=0 halted=0
+[HB][76000055000] cyc=7600000 pc=3 ppc_st=6 tile_base=11 tile_w=1 tile_start=0 ifcnt=0 oy=235 opsum=0 halted=0
+[HB][77000055000] cyc=7700000 pc=3 ppc_st=6 tile_base=160 tile_w=1 tile_start=0 ifcnt=0 oy=238 opsum=12 halted=0
+[HB][78000055000] cyc=7800000 pc=3 ppc_st=6 tile_base=310 tile_w=1 tile_start=0 ifcnt=0 oy=241 opsum=0 halted=0
+[HB][79000055000] cyc=7900000 pc=3 ppc_st=6 tile_base=53 tile_w=1 tile_start=0 ifcnt=0 oy=245 opsum=0 halted=0
+[HB][80000055000] cyc=8000000 pc=3 ppc_st=4 tile_base=203 tile_w=1 tile_start=0 ifcnt=0 oy=248 opsum=0 halted=0
+[HB][81000055000] cyc=8100000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=252 opsum=0 halted=0
+[HB][82000055000] cyc=8200000 pc=3 ppc_st=6 tile_base=95 tile_w=1 tile_start=0 ifcnt=0 oy=255 opsum=0 halted=0
+[HB][83000055000] cyc=8300000 pc=3 ppc_st=4 tile_base=245 tile_w=1 tile_start=0 ifcnt=4 oy=258 opsum=0 halted=0
+[HB][84000055000] cyc=8400000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=262 opsum=0 halted=0
+[HB][85000055000] cyc=8500000 pc=3 ppc_st=6 tile_base=137 tile_w=1 tile_start=0 ifcnt=0 oy=265 opsum=0 halted=0
+[HB][86000055000] cyc=8600000 pc=3 ppc_st=4 tile_base=287 tile_w=1 tile_start=0 ifcnt=8 oy=268 opsum=0 halted=0
+[HB][87000055000] cyc=8700000 pc=3 ppc_st=6 tile_base=29 tile_w=1 tile_start=0 ifcnt=0 oy=272 opsum=13 halted=0
+[HB][88000055000] cyc=8800000 pc=3 ppc_st=6 tile_base=179 tile_w=1 tile_start=0 ifcnt=0 oy=275 opsum=0 halted=0
+[HB][89000055000] cyc=8900000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=279 opsum=0 halted=0
+[HB][90000055000] cyc=9000000 pc=3 ppc_st=4 tile_base=72 tile_w=1 tile_start=0 ifcnt=1 oy=282 opsum=0 halted=0
+[HB][91000055000] cyc=9100000 pc=3 ppc_st=6 tile_base=221 tile_w=1 tile_start=0 ifcnt=0 oy=285 opsum=0 halted=0
+[HB][92000055000] cyc=9200000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=289 opsum=0 halted=0
+[HB][93000055000] cyc=9300000 pc=3 ppc_st=4 tile_base=114 tile_w=1 tile_start=0 ifcnt=5 oy=292 opsum=0 halted=0
+[HB][94000055000] cyc=9400000 pc=3 ppc_st=6 tile_base=263 tile_w=1 tile_start=0 ifcnt=0 oy=295 opsum=0 halted=0
+[HB][95000055000] cyc=9500000 pc=3 ppc_st=6 tile_base=6 tile_w=1 tile_start=0 ifcnt=0 oy=299 opsum=0 halted=0
+[HB][96000055000] cyc=9600000 pc=3 ppc_st=5 tile_base=156 tile_w=1 tile_start=0 ifcnt=0 oy=302 opsum=0 halted=0
+[HB][97000055000] cyc=9700000 pc=3 ppc_st=6 tile_base=305 tile_w=1 tile_start=0 ifcnt=0 oy=305 opsum=0 halted=0
+[HB][98000055000] cyc=9800000 pc=3 ppc_st=6 tile_base=48 tile_w=1 tile_start=0 ifcnt=0 oy=309 opsum=0 halted=0
+[HB][99000055000] cyc=9900000 pc=3 ppc_st=5 tile_base=198 tile_w=1 tile_start=0 ifcnt=0 oy=312 opsum=0 halted=0
+[HB][100000055000] cyc=10000000 pc=3 ppc_st=4 tile_base=0 tile_w=1 tile_start=0 ifcnt=0 oy=316 opsum=0 halted=0
+[HB][101000055000] cyc=10100000 pc=3 ppc_st=6 tile_base=90 tile_w=1 tile_start=0 ifcnt=0 oy=319 opsum=0 halted=0
+[TB] HALT observed at 101167625000 cycle=10116758
+[RESULT] mismatch_count=0 output_words=409600
+== GATE F FULL FIRST-CONV TRUE SYSTOLIC PASS ==
+$finish called from file "NPU_gate_f_first_conv_tb.sv", line 302.
+$finish at simulation time         101167825000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 101167825000 ps
+CPU Time:   2329.270 seconds;       Data structure size:  13.1Mb
+Tue Jun  2 17:13:27 2026

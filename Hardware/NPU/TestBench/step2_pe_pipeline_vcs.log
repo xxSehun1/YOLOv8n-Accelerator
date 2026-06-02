@@ -1,0 +1,113 @@
+==== LineBuffer_PE_pipeline_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Buffer/Line_Buffer.sv \
+       ../PE_Array/PE.sv \
+       LineBuffer_PE_pipeline_tb.sv \
+       -top LineBuffer_PE_pipeline_tb -o simv_step2_pe_pipeline
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Tue Jun  2 11:34:52 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Buffer/Line_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Line_Buffer.sv'.
+Parsing design file '../PE_Array/PE.sv'
+Parsing included file '../define.svh'.
+Back to file '../PE_Array/PE.sv'.
+Parsing design file 'LineBuffer_PE_pipeline_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'LineBuffer_PE_pipeline_tb.sv'.
+Top Level Modules:
+       LineBuffer_PE_pipeline_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module LineBuffer_PE_pipeline_tb
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_step2_pe_pipeline ]; then chmod a-x ../simv_step2_pe_pipeline; fi
+g++  -o ../simv_step2_pe_pipeline      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_step2_pe_pipeline.daidir -Wl,-rpath=./simv_step2_pe_pipeline.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _887465_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_step2_pe_pipeline up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .321 seconds to compile + .198 seconds to elab + .198 seconds to link
+./simv_step2_pe_pipeline
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 11:34 2026
+[MON][LB_IN][75000] idx=0 data=0x55000000
+[MON][LB_IN][85000] idx=1 data=0x55000001
+[MON][LB_IN][95000] idx=2 data=0x55000002
+[MON][LB_IN][105000] idx=3 data=0x55000003
+[MON][LB_IN][115000] idx=4 data=0x55000100
+[MON][LB_IN][125000] idx=5 data=0x55000101
+[MON][LB_IN][135000] idx=6 data=0x55000102
+[MON][LB_IN][145000] idx=7 data=0x55000103
+[MON][LB_OUT][155000] idx=0 data=0x80808080
+[MON][LB_OUT][165000] idx=1 data=0x80808080
+[MON][LB_OUT][185000] idx=2 data=0x80808080
+[MON][LB_OUT][195000] idx=3 data=0x80808080
+[MON][LB_OUT][205000] idx=4 data=0x55000000
+[MON][LB_OUT][225000] idx=5 data=0x55000001
+[MON][LB_OUT][235000] idx=6 data=0x80808080
+[MON][LB_OUT][245000] idx=7 data=0x55000100
+[MON][LB_OUT][265000] idx=8 data=0x55000101
+[MON][LB_OUT][275000] idx=9 data=0x80808080
+[MON][LB_OUT][285000] idx=10 data=0x80808080
+[MON][LB_OUT][305000] idx=11 data=0x80808080
+[MON][LB_IN][635000] idx=8 data=0x55000200
+[MON][LB_IN][645000] idx=9 data=0x55000201
+[MON][LB_IN][655000] idx=10 data=0x55000202
+[MON][LB_IN][665000] idx=11 data=0x55000203
+[MON][LB_OUT][1585000] idx=102 data=0x55000202
+[MON][LB_OUT][1595000] idx=103 data=0x55000203
+[MON][LB_OUT][1605000] idx=104 data=0x80808080
+[MON][LB_OUT][1625000] idx=105 data=0x80808080
+[MON][LB_OUT][1635000] idx=106 data=0x80808080
+[MON][LB_OUT][1645000] idx=107 data=0x80808080
+[CHECK] LineBuffer input accepts = 12
+[CHECK] LineBuffer window accepts = 108
+[CHECK] LineBuffer mismatch count = 0
+[MON] Starting single PE pipeline check
+[CHECK] PE w_buf[0][0] = 0xfc03fe01
+[CHECK] PE w_buf[0][1] = 0x03ff0102
+[CHECK] PE w_buf[0][2] = 0xfe0104fd
+[CHECK] PE if_reg[0] first = 0x80808080
+[CHECK] PE if_reg[1] first = 0x84838281
+[CHECK] PE if_reg[2] first = 0x807f7e7d
+[CHECK] PE opsum[0] = 20
+[CHECK] PE if_reg[0] stride2 = 0x807f7e7d
+[CHECK] PE if_reg[1] stride2 = 0x8f8e8d8c
+[CHECK] PE if_reg[2] stride2 = 0x75767778
+[CHECK] PE opsum[1] = 55
+[CHECK] PE if_reg[0] right = 0x75767778
+[CHECK] PE if_reg[1] right = 0x8a898887
+[CHECK] PE if_reg[2] right = 0x80808080
+[CHECK] PE opsum[2] = 190
+== LineBuffer_PE_pipeline_tb PASS ==
+$finish called from file "LineBuffer_PE_pipeline_tb.sv", line 354.
+$finish at simulation time              1870000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 1870000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Tue Jun  2 11:34:54 2026

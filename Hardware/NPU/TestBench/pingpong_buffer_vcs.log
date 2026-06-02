@@ -1,0 +1,179 @@
+==== PingPong_Ctrl_Buffer_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../Control/PingPong_Ctrl.sv \
+       ../Buffer/Weight_Buffer.sv \
+       ../Buffer/IOMap_Buffer.sv \
+       ../Buffer/Line_Buffer.sv \
+       PingPong_Ctrl_Buffer_tb.sv \
+       -top PingPong_Ctrl_Buffer_tb -o simv_pingpong_buffer
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Tue Jun  2 11:34:38 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Control/PingPong_Ctrl.sv'
+Parsing included file '../define.svh'.
+Back to file '../Control/PingPong_Ctrl.sv'.
+Parsing design file '../Buffer/Weight_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Weight_Buffer.sv'.
+Parsing design file '../Buffer/IOMap_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/IOMap_Buffer.sv'.
+Parsing design file '../Buffer/Line_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Line_Buffer.sv'.
+Parsing design file 'PingPong_Ctrl_Buffer_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'PingPong_Ctrl_Buffer_tb.sv'.
+Top Level Modules:
+       PingPong_Ctrl_Buffer_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+4 modules and 0 UDP read.
+recompiling module Weight_Buffer
+recompiling module IOMap_Buffer
+recompiling module Line_Buffer
+recompiling module PingPong_Ctrl_Buffer_tb
+All of 4 modules done
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+make[1]: Entering directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_pingpong_buffer ]; then chmod a-x ../simv_pingpong_buffer; fi
+g++  -o ../simv_pingpong_buffer      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_pingpong_buffer.daidir -Wl,-rpath=./simv_pingpong_buffer.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _885612_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o /usr/cad/synopsys/verdi/2023.12/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv_pingpong_buffer up to date
+make[1]: Leaving directory '/home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/csrc'
+CPU time: .443 seconds to compile + .199 seconds to elab + .200 seconds to link
+./simv_pingpong_buffer
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 11:34 2026
+[MON][65000] wb_fill_start addr=0x00001000 bytes=320
+[MON][75000] state 0 -> 1
+[MON][1685000] state 1 -> 2
+[MON][1685000] iob_in_start addr=0x00000000 bytes=100
+[MON][1685000] iob_out_start addr=0x00002000 bytes=200
+[MON][1685000] lb_flush row_width=5 kernel=3
+[MON][1695000] state 2 -> 3
+[MON][2595000] state 3 -> 4
+[MON][2705000] state 4 -> 5
+[MON][2825000] state 5 -> 6
+[MON][2925000] state 6 -> 4
+[MON][3035000] state 4 -> 5
+[MON][3155000] state 5 -> 6
+[MON][3255000] state 6 -> 4
+[MON][3355000] state 4 -> 5
+[MON][3475000] state 5 -> 6
+[MON][3575000] state 6 -> 4
+[MON][3685000] state 4 -> 5
+[MON][3805000] state 5 -> 6
+[MON][3915000] state 6 -> 4
+[MON][4025000] state 4 -> 5
+[MON][4145000] state 5 -> 6
+[MON][4245000] state 6 -> 4
+[MON][4345000] state 4 -> 5
+[MON][4465000] state 5 -> 6
+[MON][4565000] state 6 -> 4
+[MON][4665000] state 4 -> 5
+[MON][4775000] state 5 -> 6
+[MON][4885000] state 6 -> 4
+[MON][4995000] state 4 -> 5
+[MON][5105000] state 5 -> 6
+[MON][5205000] state 6 -> 4
+[MON][5305000] state 4 -> 5
+[MON][5425000] state 5 -> 6
+[MON][5525000] state 6 -> 4
+[MON][5635000] state 4 -> 5
+[MON][5755000] state 5 -> 6
+[MON][5855000] state 6 -> 4
+[MON][5955000] state 4 -> 5
+[MON][6065000] state 5 -> 6
+[MON][6165000] state 6 -> 4
+[MON][6275000] state 4 -> 5
+[MON][6395000] state 5 -> 6
+[MON][6495000] state 6 -> 4
+[MON][6605000] state 4 -> 5
+[MON][6725000] state 5 -> 6
+[MON][6835000] state 6 -> 4
+[MON][6935000] state 4 -> 5
+[MON][7055000] state 5 -> 6
+[MON][7165000] state 6 -> 4
+[MON][7265000] state 4 -> 5
+[MON][7385000] state 5 -> 6
+[MON][7485000] state 6 -> 4
+[MON][7595000] state 4 -> 5
+[MON][7715000] state 5 -> 6
+[MON][7815000] state 6 -> 4
+[MON][7915000] state 4 -> 5
+[MON][8035000] state 5 -> 6
+[MON][8135000] state 6 -> 4
+[MON][8235000] state 4 -> 5
+[MON][8345000] state 5 -> 6
+[MON][8445000] state 6 -> 4
+[MON][8545000] state 4 -> 5
+[MON][8665000] state 5 -> 6
+[MON][8765000] state 6 -> 4
+[MON][8865000] state 4 -> 5
+[MON][8975000] state 5 -> 6
+[MON][9085000] state 6 -> 4
+[MON][9195000] state 4 -> 5
+[MON][9305000] state 5 -> 6
+[MON][9405000] state 6 -> 4
+[MON][9505000] state 4 -> 5
+[MON][9625000] state 5 -> 6
+[MON][9725000] state 6 -> 4
+[MON][9835000] state 4 -> 5
+[MON][9955000] state 5 -> 6
+[MON][10055000] state 6 -> 4
+[MON][10155000] state 4 -> 5
+[MON][10265000] state 5 -> 6
+[MON][10365000] state 6 -> 4
+[MON][10475000] state 4 -> 5
+[MON][10595000] state 5 -> 6
+[MON][10695000] state 6 -> 7
+[MON][10705000] state 7 -> 8
+[MON][10725000] oc_done pulse after output buffer done
+[MON][10745000] state 8 -> 9
+[MON][10755000] state 9 -> 0
+[CHECK] wb_fill_start_count = 1
+[CHECK] iob_in_start_count = 1
+[CHECK] iob_out_start_count = 1
+[CHECK] lb_flush_count = 1
+[CHECK] wb_sram_read_count = 160
+[CHECK] iob_input_accept_count = 25
+[CHECK] filter_accept_count = 72
+[CHECK] ifmap_accept_count = 225
+[CHECK] lb_window_accept_count = 225
+[CHECK] ipsum_accept_count = 200
+[CHECK] opsum_accept_count = 200
+[CHECK] output_write_count = 50
+[CHECK] oc_layer_start_count = 1
+[CHECK] oc_layer_last_count = 1
+[CHECK] pe_tile_start_count = 24
+[CHECK] exec_done_count = 1
+== PingPong_Ctrl_Buffer_tb PASS ==
+$finish called from file "PingPong_Ctrl_Buffer_tb.sv", line 516.
+$finish at simulation time             10765000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 10765000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.1Mb
+Tue Jun  2 11:34:41 2026

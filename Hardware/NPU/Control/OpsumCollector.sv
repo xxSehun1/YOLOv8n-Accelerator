@@ -29,6 +29,19 @@ module OpsumCollector #(
     input  logic         pixel_last,
     input  logic         layer_last,   // HIGH only on final opsum_accept of the layer
     input  logic [3:0]   lane_sel,
+    input  logic         spatial_mode,
+    input  logic [15:0]  spatial_cols,
+    input  logic [15:0]  spatial_groups,
+    input  logic [4:0]   spatial_channel,
+    input  logic         spatial_valid,
+    input  logic         spatial_tile_last,
+    input  logic         spatial_last,
+    input  logic [LANES*`PSUM_BITS-1:0] spatial_data_flat,
+    output logic         spatial_ready,
+    input  logic [5:0]   ppu_shift_ctrl,
+    input  logic         ppu_silu_en_ctrl,
+    input  logic         ppu_maxpool_en_ctrl,
+    input  logic         ppu_maxpool_init_ctrl,
 
     // Bias stream from Weight_Buffer.
     input  logic         bias_valid,
@@ -81,6 +94,31 @@ module OpsumCollector #(
     logic                  pack_valid;   // act_valid pending
 
     logic layer_last_seen;
+    logic spatial_emit_active;
+    logic [$clog2(LANES)-1:0] spatial_emit_col;
+    logic [3:0] spatial_emit_group;
+    localparam int SPATIAL_GROUP_SLOTS = (LANES + 3) / 4;
+    logic [`DATA_BITS-1:0] spatial_pack [0:LANES-1][0:SPATIAL_GROUP_SLOTS-1];
+
+    function automatic logic [7:0] spatial_ppu_byte(
+        input logic signed [`PSUM_BITS-1:0] psum_in,
+        input logic [5:0] shift_in,
+        input logic silu_en_in
+    );
+        logic signed [`PSUM_BITS-1:0] shifted;
+        logic signed [7:0] q;
+        begin
+            shifted = psum_in >>> shift_in;
+            if (shifted > 32'sd127)       q = 8'sd127;
+            else if (shifted < -32'sd128) q = -8'sd128;
+            else                          q = shifted[7:0];
+
+            // Matches the current 256-entry SiLU LUT: negative int8 values map
+            // to zero, non-negative values pass through.
+            if (silu_en_in && q[7]) q = 8'sd0;
+            spatial_ppu_byte = q[7:0] + 8'd128;
+        end
+    endfunction
 
     // Next-state logic.
     always_comb begin
@@ -89,9 +127,15 @@ module OpsumCollector #(
             S_IDLE:       if (layer_start)
                               next = bias_en ? S_BIAS_LOAD : S_COLLECT;
             S_BIAS_LOAD:  if (bias_cnt == LANES) next = S_COLLECT;
-            S_COLLECT:    if (layer_last_seen && (drain_pending | psum_complete) == '0 && !pack_valid)
-                              next = S_DRAIN_TAIL;
-            S_DRAIN_TAIL: if (!pack_valid)       next = S_DONE;
+            S_COLLECT: begin
+                if (spatial_mode) begin
+                    if (layer_last_seen && !spatial_emit_active)
+                        next = S_DRAIN_TAIL;
+                end else if (layer_last_seen && (drain_pending | psum_complete) == '0 && !pack_valid) begin
+                    next = S_DRAIN_TAIL;
+                end
+            end
+            S_DRAIN_TAIL: if (spatial_mode || !pack_valid) next = S_DONE;
             S_DONE:                              next = S_IDLE;
             default:                             next = S_IDLE;
         endcase
@@ -120,7 +164,15 @@ module OpsumCollector #(
             pack_buf         <= '0;
             pack_valid       <= 1'b0;
             layer_last_seen  <= 1'b0;
+            spatial_emit_active <= 1'b0;
+            spatial_emit_col <= '0;
+            spatial_emit_group <= '0;
             for (k = 0; k < LANES; k++) bias_buf[k] <= '0;
+            for (k = 0; k < LANES; k++) begin
+                for (int g = 0; g < SPATIAL_GROUP_SLOTS; g++) begin
+                    spatial_pack[k][g] <= '0;
+                end
+            end
         end else begin
             state <= next;
 
@@ -132,8 +184,16 @@ module OpsumCollector #(
                     pack_cnt        <= '0;
                     pack_valid      <= 1'b0;
                     layer_last_seen <= 1'b0;
+                    spatial_emit_active <= 1'b0;
+                    spatial_emit_col <= '0;
+                    spatial_emit_group <= '0;
                     if (!bias_en) begin
                         for (k = 0; k < LANES; k++) bias_buf[k] <= '0;
+                    end
+                    for (k = 0; k < LANES; k++) begin
+                        for (int g = 0; g < SPATIAL_GROUP_SLOTS; g++) begin
+                            spatial_pack[k][g] <= '0;
+                        end
                     end
                 end
 
@@ -143,35 +203,70 @@ module OpsumCollector #(
                 end
 
                 S_COLLECT, S_DRAIN_TAIL: begin
-                    // Mark lanes whose reduction just finished as pending drain.
-                    for (k = 0; k < LANES; k++) begin
-                        if (psum_complete[k]) drain_pending[k] <= 1'b1;
-                    end
+                    if (spatial_mode) begin
+                        if (state == S_COLLECT && spatial_valid && spatial_ready) begin
+                            for (k = 0; k < LANES; k++) begin
+                                if (k < spatial_cols && spatial_channel[4:2] < SPATIAL_GROUP_SLOTS) begin
+                                    spatial_pack[k][spatial_channel[4:2]][spatial_channel[1:0]*8 +: 8]
+                                        <= spatial_ppu_byte(
+                                               $signed(spatial_data_flat[k*`PSUM_BITS +: `PSUM_BITS])
+                                             + bias_buf[spatial_channel[$clog2(LANES)-1:0]],
+                                               ppu_shift_ctrl,
+                                               ppu_silu_en_ctrl);
+                                end
+                            end
+                            if (spatial_tile_last) begin
+                                spatial_emit_active <= 1'b1;
+                                spatial_emit_col <= '0;
+                                spatial_emit_group <= '0;
+                            end
+                            if (spatial_last) layer_last_seen <= 1'b1;
+                        end
 
-                    // Track layer end
-                    if (state == S_COLLECT && opsum_valid && layer_last && opsum_ready)
-                        layer_last_seen <= 1'b1;
+                        if (spatial_emit_active && act_ready) begin
+                            if ({12'd0, spatial_emit_group} + 16'd1 >= spatial_groups) begin
+                                spatial_emit_group <= '0;
+                                if ({16'd0, spatial_emit_col} + 16'd1 >= spatial_cols) begin
+                                    spatial_emit_active <= 1'b0;
+                                    spatial_emit_col <= '0;
+                                end else begin
+                                    spatial_emit_col <= spatial_emit_col + 1'b1;
+                                end
+                            end else begin
+                                spatial_emit_group <= spatial_emit_group + 1'b1;
+                            end
+                        end
+                    end else begin
+                        // Mark lanes whose reduction just finished as pending drain.
+                        for (k = 0; k < LANES; k++) begin
+                            if (psum_complete[k]) drain_pending[k] <= 1'b1;
+                        end
 
-                    // Walk one pending lane per cycle through the PPU; pack 4
-                    // int8 results into one 32-bit word.
-                    if (drain_pending != '0 && !pack_valid) begin
-                        // FIX: Use the combinationally determined drain_lane
-                        drain_pending[drain_lane] <= 1'b0;
-                        pack_buf[pack_cnt*8 +: 8] <= ppu_data_out;  // uses combinational PPU result
-                        pack_cnt  <= pack_cnt + 1'b1;
-                        drain_idx <= (drain_lane + 1) % LANES;
-                        if (pack_cnt == 2'd3) pack_valid <= 1'b1;
-                    end 
-                    // FIX: Tail flush logic for handling non-multiple of 4 output sizes
-                    else if (state == S_DRAIN_TAIL && drain_pending == '0 && pack_cnt > 0 && !pack_valid) begin
-                        pack_valid <= 1'b1; 
-                    end
+                        // Track layer end
+                        if (state == S_COLLECT && opsum_valid && layer_last && opsum_ready)
+                            layer_last_seen <= 1'b1;
 
-                    // Hand off packed word to IOMap_Buffer.
-                    if (pack_valid && act_ready) begin
-                        pack_valid <= 1'b0;
-                        pack_cnt   <= '0;
-                        pack_buf   <= '0;
+                        // Walk one pending lane per cycle through the PPU; pack 4
+                        // int8 results into one 32-bit word.
+                        if (drain_pending != '0 && !pack_valid) begin
+                            // FIX: Use the combinationally determined drain_lane
+                            drain_pending[drain_lane] <= 1'b0;
+                            pack_buf[pack_cnt*8 +: 8] <= ppu_data_out;  // uses combinational PPU result
+                            pack_cnt  <= pack_cnt + 1'b1;
+                            drain_idx <= (drain_lane + 1) % LANES;
+                            if (pack_cnt == 2'd3) pack_valid <= 1'b1;
+                        end
+                        // FIX: Tail flush logic for handling non-multiple of 4 output sizes
+                        else if (state == S_DRAIN_TAIL && drain_pending == '0 && pack_cnt > 0 && !pack_valid) begin
+                            pack_valid <= 1'b1;
+                        end
+
+                        // Hand off packed word to IOMap_Buffer.
+                        if (pack_valid && act_ready) begin
+                            pack_valid <= 1'b0;
+                            pack_cnt   <= '0;
+                            pack_buf   <= '0;
+                        end
                     end
                 end
 
@@ -207,14 +302,16 @@ module OpsumCollector #(
     end
 
 
-    assign opsum_ready = (state == S_COLLECT) && (drain_pending[lane_sel] == 1'b0);
+    assign opsum_ready = !spatial_mode && (state == S_COLLECT) && (drain_pending[lane_sel] == 1'b0);
+    assign spatial_ready = spatial_mode && (state == S_COLLECT) && !spatial_emit_active
+                         && !ppu_maxpool_en_ctrl && !ppu_maxpool_init_ctrl;
 
     // Feed the selected lane's PSUM output into the PPU
     assign ppu_data_in = psum_out_flat[drain_lane*`PSUM_BITS +: `DATA_BITS];
 
     // Packed activation handoff.
-    assign act_data  = pack_buf;
-    assign act_valid = pack_valid;
+    assign act_data  = spatial_mode ? spatial_pack[spatial_emit_col][spatial_emit_group] : pack_buf;
+    assign act_valid = spatial_mode ? spatial_emit_active : pack_valid;
 
     assign done = (state == S_DONE);
 

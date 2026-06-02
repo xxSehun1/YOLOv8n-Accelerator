@@ -7,8 +7,9 @@
 //   ConfigLoader -> PE_array (scan chains + PE_en) once at startup
 //   PingPong_Ctrl + Weight_Buffer x2 + IOMap_Buffer x2 + Line_Buffer
 //                 + PE_array + OpsumCollector + PSUM_acc x16 + PPU + Add_Qint8
-//   SRAM port 1 is muxed between Weight_Buffer x2 and IOMap_Buffer x2
-//   (the MVP controller schedule guarantees only one is active at a time).
+//   SRAM port 1 is muxed between Weight_Buffer x2 and input IOMap reads.
+//   During compute, SRAM port 0 is reused by the active output IOMap writer
+//   for read-modify-write scatter while DMA is idle.
 //
 // External interface: a start pulse, a halted flag, and a DRAM port the
 // testbench / system supplies (input image, weights, backbone outputs).
@@ -49,6 +50,10 @@ module NPU_top (
     logic         dma_valid, dma_is_store;
     logic [31:0]  dma_dram, dma_sram, dma_size;
     logic         dma_done;
+    logic         dma_debug_input_loaded;
+    logic [15:0]  dma_debug_weight_load_count;
+    logic [15:0]  dma_debug_sram_copy_count;
+    logic [15:0]  dma_debug_store_count;
 
     // ConfigLoader -> PE_array.
     logic                              set_XID, set_YID, set_LN;
@@ -60,6 +65,7 @@ module NPU_top (
     logic [NUM_PE-1:0]                 PE_en;
     logic [NUM_PE-1:0]                 PE_en_gated; // PE_en pulsed only during S_PE_CONFIG
     logic                              ifmap_en;    // from PingPong: true only in S_IFMAP
+    logic                              pe_tile_start;
     logic                              cfg_done;
 
     // PingPong_Ctrl -> buffers.
@@ -96,6 +102,12 @@ module NPU_top (
     logic                              oc_pixel_init, oc_pixel_last;
     logic                              oc_layer_last;  // HIGH only on final opsum_accept
     logic [3:0]                        oc_lane_sel;
+    logic                              oc_spatial_mode;
+    logic [15:0]                       oc_spatial_cols;
+    logic [15:0]                       oc_spatial_groups;
+    logic [4:0]                        oc_spatial_channel;
+    logic                              oc_spatial_tile_last;
+    logic                              oc_spatial_last;
 
     // PingPong_Ctrl -> Add_Qint8.
     logic                              add_en;
@@ -108,6 +120,9 @@ module NPU_top (
     logic                              a_en, a_we;
     logic [`SRAM_ADDR_BITS-1:0]        a_addr;
     logic [`DATA_BITS-1:0]             a_wdata, a_rdata;
+    logic                              dma_sram_en, dma_sram_we;
+    logic [`SRAM_ADDR_BITS-1:0]        dma_sram_addr;
+    logic [`DATA_BITS-1:0]             dma_sram_wdata;
     logic                              b_en, b_we;
     logic [`SRAM_ADDR_BITS-1:0]        b_addr;
     logic [`DATA_BITS-1:0]             b_wdata, b_rdata;
@@ -119,6 +134,9 @@ module NPU_top (
     logic [`DATA_BITS-1:0]             wb0_filter_data, wb1_filter_data;
     logic                              wb0_filter_valid, wb1_filter_valid;
     logic                              wb0_filter_ready, wb1_filter_ready;
+    logic                              wb0_bias_valid, wb1_bias_valid;
+    logic                              wb0_bias_ready, wb1_bias_ready;
+    logic signed [`PSUM_BITS-1:0]      wb0_bias_word, wb1_bias_word;
 
     // IOMap_Buffer x2.
     logic                              iob0_mode_write, iob1_mode_write;
@@ -130,6 +148,7 @@ module NPU_top (
     logic                              iob1_sram_en, iob1_sram_we;
     logic [`SRAM_ADDR_BITS-1:0]        iob0_sram_addr, iob1_sram_addr;
     logic [`DATA_BITS-1:0]             iob0_sram_wdata, iob1_sram_wdata;
+    logic [`DATA_BITS-1:0]             iob0_sram_rdata, iob1_sram_rdata;
     logic [`DATA_BITS-1:0]             iob0_ifmap_data, iob1_ifmap_data;
     logic                              iob0_ifmap_valid, iob1_ifmap_valid;
     logic                              iob0_ifmap_ready, iob1_ifmap_ready;
@@ -141,14 +160,22 @@ module NPU_top (
     logic [`DATA_BITS-1:0]             lb_ifmap_data, lb_win_data;
     logic                              lb_ifmap_valid, lb_ifmap_ready;
     logic                              lb_win_valid, lb_win_ready;
+    logic [LANES*`DATA_BITS-1:0]       lb_win_vec_data;
+    logic                              lb_win_vec_valid, lb_win_vec_ready;
 
     // GLB streams to PE_array.
     logic                              GLB_ifmap_valid,  GLB_ifmap_ready;
+    logic                              ppc_ifmap_valid,  ppc_ifmap_ready;
     logic                              GLB_filter_valid, GLB_filter_ready;
     logic                              GLB_ipsum_valid,  GLB_ipsum_ready;
     logic [`DATA_BITS-1:0]             GLB_data_in;
     logic                              GLB_opsum_valid, GLB_opsum_ready;
+    logic                              GLB_opsum_valid_to_oc, GLB_opsum_ready_to_pe;
     logic [`DATA_BITS-1:0]             GLB_data_out;
+    logic                              pe_spatial_opsum_valid;
+    logic                              pe_spatial_opsum_ready;
+    logic [LANES*`DATA_BITS-1:0]       pe_spatial_opsum_data;
+    logic                              pe_spatial_ifmap_ready;
 
     // OpsumCollector <-> PSUM_acc x16.
     logic signed [`PSUM_BITS-1:0]      oc_psum_data;
@@ -165,12 +192,11 @@ module NPU_top (
     logic [`DATA_BITS-1:0]             oc_act_data;
     logic                              oc_act_valid, oc_act_ready;
     logic                              oc_done;
+    logic                              oc_done_to_ppc;
 
-    // Bias stream to OpsumCollector. MVP: tie off.
+    // Bias stream to OpsumCollector.
     logic                              bias_valid, bias_ready;
     logic signed [`PSUM_BITS-1:0]      bias_word;
-    assign bias_valid = 1'b0;
-    assign bias_word  = '0;
 
     // Instantiations.
 
@@ -217,8 +243,12 @@ module NPU_top (
         .dma_done(dma_done),
         .dram_en(dram_en), .dram_we(dram_we),
         .dram_addr(dram_addr), .dram_wdata(dram_wdata), .dram_rdata(dram_rdata),
-        .sram_en(a_en), .sram_we(a_we), .sram_addr(a_addr),
-        .sram_wdata(a_wdata), .sram_rdata(a_rdata)
+        .sram_en(dma_sram_en), .sram_we(dma_sram_we), .sram_addr(dma_sram_addr),
+        .sram_wdata(dma_sram_wdata), .sram_rdata(a_rdata),
+        .debug_input_loaded(dma_debug_input_loaded),
+        .debug_weight_load_count(dma_debug_weight_load_count),
+        .debug_sram_copy_count(dma_debug_sram_copy_count),
+        .debug_store_count(dma_debug_store_count)
     );
 
     // LN_CONFIG uses default 15'h36DB: enables psum chaining across all R=3
@@ -261,18 +291,19 @@ module NPU_top (
         .iob_out_len(iob_out_len), .iob_out_done(iob_out_done),
         .iob_swap(iob_swap),
         .lb_flush(lb_flush), .lb_row_width(lb_row_width), .lb_kernel(lb_kernel),
+        .pe_tile_start(pe_tile_start),
         .cfg_done(cfg_done),
         .pe_config(pe_config), .glb_sel(glb_sel),
         .ifmap_tag_X(ifmap_tag_X),   .filter_tag_X(filter_tag_X),
         .ipsum_tag_X(ipsum_tag_X),   .opsum_tag_X(opsum_tag_X),
         .ifmap_tag_Y(ifmap_tag_Y),   .filter_tag_Y(filter_tag_Y),
         .ipsum_tag_Y(ipsum_tag_Y),   .opsum_tag_Y(opsum_tag_Y),
-        .glb_ifmap_ready(GLB_ifmap_ready),
-        .glb_ifmap_valid(GLB_ifmap_valid),
+        .glb_ifmap_ready(ppc_ifmap_ready),
+        .glb_ifmap_valid(ppc_ifmap_valid),
         .glb_filter_ready(GLB_filter_ready),
         .glb_filter_valid(GLB_filter_valid),
         .glb_ipsum_ready(GLB_ipsum_ready),
-        .glb_opsum_valid(GLB_opsum_valid),
+        .glb_opsum_valid(GLB_opsum_valid_to_oc),
         .glb_opsum_ready(GLB_opsum_ready),
         .ppu_shift(ppu_shift), .ppu_silu_en(ppu_silu_en),
         .ppu_maxpool_en(ppu_maxpool_en), .ppu_maxpool_init(ppu_maxpool_init),
@@ -280,11 +311,19 @@ module NPU_top (
         .oc_pixel_init(oc_pixel_init), .oc_pixel_last(oc_pixel_last),
         .oc_layer_last(oc_layer_last),
         .oc_lane_sel(oc_lane_sel),
+        .oc_spatial_mode(oc_spatial_mode),
+        .oc_spatial_cols(oc_spatial_cols),
+        .oc_spatial_groups(oc_spatial_groups),
+        .oc_spatial_channel(oc_spatial_channel),
+        .oc_spatial_tile_last(oc_spatial_tile_last),
+        .oc_spatial_last(oc_spatial_last),
+        .spatial_opsum_valid(pe_spatial_opsum_valid),
+        .spatial_opsum_ready(pe_spatial_opsum_ready),
         .add_en(add_en),
         .add_lhs_shift(add_lhs_shift), .add_rhs_shift(add_rhs_shift),
         .pp_ipsum_valid(pp_ipsum_valid),
         .ifmap_en(ifmap_en),
-        .oc_done(oc_done)
+        .oc_done(oc_done_to_ppc)
     );
 
     // Weight_Buffer ping-pong. wb_sel selects which instance the controller
@@ -293,25 +332,50 @@ module NPU_top (
         .clk(clk), .rst(rst),
         .fill_start(wb_fill_start & ~wb_sel),
         .fill_addr(wb_fill_addr), .fill_bytes(wb_fill_bytes),
+        .in_c(exec_in_c), .out_c(exec_out_c),
+        .kernel(exec_kernel), .bias_en(exec_flags[`FLAG_BIAS]),
         .fill_done(wb0_fill_done),
         .sram_en(wb0_sram_en), .sram_addr(wb0_sram_addr),
         .sram_rdata(b_rdata),
         .filter_data(wb0_filter_data),
-        .filter_valid(wb0_filter_valid), .filter_ready(wb0_filter_ready)
+        .filter_valid(wb0_filter_valid), .filter_ready(wb0_filter_ready),
+        .bias_valid(wb0_bias_valid), .bias_word(wb0_bias_word),
+        .bias_ready(wb0_bias_ready)
     );
     Weight_Buffer wb1 (
         .clk(clk), .rst(rst),
         .fill_start(wb_fill_start &  wb_sel),
         .fill_addr(wb_fill_addr), .fill_bytes(wb_fill_bytes),
+        .in_c(exec_in_c), .out_c(exec_out_c),
+        .kernel(exec_kernel), .bias_en(exec_flags[`FLAG_BIAS]),
         .fill_done(wb1_fill_done),
         .sram_en(wb1_sram_en), .sram_addr(wb1_sram_addr),
         .sram_rdata(b_rdata),
         .filter_data(wb1_filter_data),
-        .filter_valid(wb1_filter_valid), .filter_ready(wb1_filter_ready)
+        .filter_valid(wb1_filter_valid), .filter_ready(wb1_filter_ready),
+        .bias_valid(wb1_bias_valid), .bias_word(wb1_bias_word),
+        .bias_ready(wb1_bias_ready)
     );
     assign wb_fill_done = wb_sel ? wb1_fill_done : wb0_fill_done;
 
+    assign bias_valid = wb_sel ? wb1_bias_valid : wb0_bias_valid;
+    assign bias_word  = wb_sel ? wb1_bias_word  : wb0_bias_word;
+    assign wb0_bias_ready = ~wb_sel & bias_ready;
+    assign wb1_bias_ready =  wb_sel & bias_ready;
+
     // IOMap_Buffer ping-pong wiring.
+    logic [15:0] iob_out_c_dim;
+    logic [15:0] iob_out_h_dim;
+    logic [15:0] iob_out_w_dim;
+    logic [15:0] iob0_tensor_c, iob0_tensor_h, iob0_tensor_w;
+    logic [15:0] iob1_tensor_c, iob1_tensor_h, iob1_tensor_w;
+    logic        iob0_pack_read, iob1_pack_read;
+    logic        iob0_unpack_write, iob1_unpack_write;
+
+    assign iob_out_c_dim = (exec_op == 2'd1) ? exec_in_c : exec_out_c;
+    assign iob_out_h_dim = ((exec_in_h + (exec_pad << 1) - exec_kernel) / exec_stride) + 16'd1;
+    assign iob_out_w_dim = ((exec_in_w + (exec_pad << 1) - exec_kernel) / exec_stride) + 16'd1;
+
     assign iob0_mode_write = iob_swap;
     assign iob1_mode_write = ~iob_swap;
     assign iob0_start      = iob_swap ? iob_out_start : iob_in_start;
@@ -322,15 +386,30 @@ module NPU_top (
     assign iob1_length     = iob_swap ? iob_in_len    : iob_out_len;
     assign iob_in_done     = iob_swap ? iob1_done     : iob0_done;
     assign iob_out_done    = iob_swap ? iob0_done     : iob1_done;
+    assign iob0_tensor_c   = iob_swap ? iob_out_c_dim : exec_in_c;
+    assign iob0_tensor_h   = iob_swap ? iob_out_h_dim : exec_in_h;
+    assign iob0_tensor_w   = iob_swap ? iob_out_w_dim : exec_in_w;
+    assign iob1_tensor_c   = iob_swap ? exec_in_c     : iob_out_c_dim;
+    assign iob1_tensor_h   = iob_swap ? exec_in_h     : iob_out_h_dim;
+    assign iob1_tensor_w   = iob_swap ? exec_in_w     : iob_out_w_dim;
+    assign iob0_pack_read      = ~iob0_mode_write;
+    assign iob1_pack_read      = ~iob1_mode_write;
+    assign iob0_unpack_write   =  iob0_mode_write;
+    assign iob1_unpack_write   =  iob1_mode_write;
 
     IOMap_Buffer iob0 (
         .clk(clk), .rst(rst),
         .mode_write(iob0_mode_write), .start(iob0_start),
         .base_addr(iob0_base_addr), .length(iob0_length),
+        .pack_nchw_read(iob0_pack_read),
+        .unpack_nchw_write(iob0_unpack_write),
+        .tensor_c(iob0_tensor_c),
+        .tensor_h(iob0_tensor_h),
+        .tensor_w(iob0_tensor_w),
         .done(iob0_done),
         .sram_en(iob0_sram_en), .sram_we(iob0_sram_we),
         .sram_addr(iob0_sram_addr),
-        .sram_wdata(iob0_sram_wdata), .sram_rdata(b_rdata),
+        .sram_wdata(iob0_sram_wdata), .sram_rdata(iob0_sram_rdata),
         .ifmap_data(iob0_ifmap_data),
         .ifmap_valid(iob0_ifmap_valid), .ifmap_ready(iob0_ifmap_ready),
         .ppu_data(iob0_ppu_data),
@@ -340,10 +419,15 @@ module NPU_top (
         .clk(clk), .rst(rst),
         .mode_write(iob1_mode_write), .start(iob1_start),
         .base_addr(iob1_base_addr), .length(iob1_length),
+        .pack_nchw_read(iob1_pack_read),
+        .unpack_nchw_write(iob1_unpack_write),
+        .tensor_c(iob1_tensor_c),
+        .tensor_h(iob1_tensor_h),
+        .tensor_w(iob1_tensor_w),
         .done(iob1_done),
         .sram_en(iob1_sram_en), .sram_we(iob1_sram_we),
         .sram_addr(iob1_sram_addr),
-        .sram_wdata(iob1_sram_wdata), .sram_rdata(b_rdata),
+        .sram_wdata(iob1_sram_wdata), .sram_rdata(iob1_sram_rdata),
         .ifmap_data(iob1_ifmap_data),
         .ifmap_valid(iob1_ifmap_valid), .ifmap_ready(iob1_ifmap_ready),
         .ppu_data(iob1_ppu_data),
@@ -361,13 +445,27 @@ module NPU_top (
     assign iob0_ppu_valid =  iob_swap & oc_act_valid;
     assign iob1_ppu_valid = ~iob_swap & oc_act_valid;
     assign oc_act_ready   = iob_swap ? iob0_ppu_ready : iob1_ppu_ready;
+    assign iob0_sram_rdata = iob0_mode_write ? a_rdata : b_rdata;
+    assign iob1_sram_rdata = iob1_mode_write ? a_rdata : b_rdata;
+
+    logic oc_done_seen, iob_out_done_seen;
+    always_ff @(posedge clk) begin
+        if (rst || oc_layer_start) begin
+            oc_done_seen      <= 1'b0;
+            iob_out_done_seen <= 1'b0;
+        end else begin
+            if (oc_done)      oc_done_seen      <= 1'b1;
+            if (iob_out_done) iob_out_done_seen <= 1'b1;
+        end
+    end
+    assign oc_done_to_ppc = (oc_done_seen || oc_done) && (iob_out_done_seen || iob_out_done);
 
     // Line_Buffer geometry: pull layer dims directly from the latched
     // Decoder outputs (stable while exec_valid is high). out_h is the conv
     // formula (in_h + 2*pad - kernel) / stride + 1.
     logic [15:0] lb_out_h;
     logic        lb_done;
-    assign lb_out_h = ((exec_in_h + (exec_pad << 1) - exec_kernel) / exec_stride) + 16'd1;
+    assign lb_out_h = iob_out_h_dim;
 
     Line_Buffer i_lb (
         .clk(clk), .rst(rst),
@@ -377,20 +475,43 @@ module NPU_top (
         .done(lb_done),
         .ifmap_data(lb_ifmap_data),
         .ifmap_valid(lb_ifmap_valid), .ifmap_ready(lb_ifmap_ready),
+        .spatial_mode(oc_spatial_mode),
+        .spatial_cols(oc_spatial_cols),
+        .win_vec_data(lb_win_vec_data),
+        .win_vec_valid(lb_win_vec_valid),
+        .win_vec_ready(lb_win_vec_ready),
         .win_data(lb_win_data),
         .win_valid(lb_win_valid), .win_ready(lb_win_ready)
     );
 
-    // SRAM port 1 mux: priority encoder (wb > iob_in > iob_out).
-    // MVP relies on the controller schedule not overlapping users.
+    // SRAM port 0 mux: DMA owns the port when active.  During compute, DMA is
+    // idle and the active output IOMap writer uses this port for RMW scatter.
+    always_comb begin
+        a_en = dma_sram_en;
+        a_we = dma_sram_we;
+        a_addr = dma_sram_addr;
+        a_wdata = dma_sram_wdata;
+
+        if (!dma_sram_en) begin
+            if (iob0_mode_write && iob0_sram_en) begin
+                a_en = 1'b1; a_we = iob0_sram_we;
+                a_addr = iob0_sram_addr; a_wdata = iob0_sram_wdata;
+            end else if (iob1_mode_write && iob1_sram_en) begin
+                a_en = 1'b1; a_we = iob1_sram_we;
+                a_addr = iob1_sram_addr; a_wdata = iob1_sram_wdata;
+            end
+        end
+    end
+
+    // SRAM port 1 mux: Weight_Buffer and active input IOMap reads.
     always_comb begin
         b_en = 1'b0; b_we = 1'b0; b_addr = '0; b_wdata = '0;
         if      (wb0_sram_en)  begin b_en = 1'b1; b_addr = wb0_sram_addr; end
         else if (wb1_sram_en)  begin b_en = 1'b1; b_addr = wb1_sram_addr; end
-        else if (iob0_sram_en) begin
+        else if (iob0_sram_en && !iob0_mode_write) begin
             b_en = 1'b1; b_we = iob0_sram_we;
             b_addr = iob0_sram_addr; b_wdata = iob0_sram_wdata;
-        end else if (iob1_sram_en) begin
+        end else if (iob1_sram_en && !iob1_mode_write) begin
             b_en = 1'b1; b_we = iob1_sram_we;
             b_addr = iob1_sram_addr; b_wdata = iob1_sram_wdata;
         end
@@ -401,8 +522,8 @@ module NPU_top (
     // wb_fill_start routing so wb_sel=0 means wb0 is both filling and
     // reading.
     assign GLB_filter_valid = wb_sel ? wb1_filter_valid : wb0_filter_valid;
-    assign wb0_filter_ready = ~wb_sel & GLB_filter_ready;
-    assign wb1_filter_ready =  wb_sel & GLB_filter_ready;
+    assign wb0_filter_ready = ~wb_sel & GLB_filter_ready & (glb_sel == 2'd1);
+    assign wb1_filter_ready =  wb_sel & GLB_filter_ready & (glb_sel == 2'd1);
 
     // GLB ifmap stream from Line_Buffer — gated to the S_IFMAP phase only.
     // Without this gate, lb_win_valid can go high while PingPong is still in
@@ -411,18 +532,23 @@ module NPU_top (
     // the stray ifmap word and advance to COMPUTE, so when PingPong finally
     // reaches S_IFMAP every PE is already past IF → GLB_ifmap_ready stays 0
     // → S_IFMAP never exits.
-    assign GLB_ifmap_valid = lb_win_valid && ifmap_en;
+    assign GLB_ifmap_valid = lb_win_valid && ifmap_en && !oc_spatial_mode;
     // Gate lb_win_ready too: Line_Buffer must not advance its window outside
     // S_IFMAP.  Without this, PEs that just exited WEIGHT→IF (near the end of
     // S_FILTER) raise GLB_ifmap_ready=1, which would let the LB consume up to
     // 6 window slots before PingPong even enters S_IFMAP.  The controller
     // counter would then see lb_win_valid=0 for those missing slots and
     // time out waiting for data.
-    assign lb_win_ready    = GLB_ifmap_ready && ifmap_en;
+    assign lb_win_ready     = GLB_ifmap_ready && ifmap_en && !oc_spatial_mode;
+    assign lb_win_vec_ready = pe_spatial_ifmap_ready && ifmap_en && oc_spatial_mode;
+    assign ppc_ifmap_valid  = oc_spatial_mode ? (lb_win_vec_valid && ifmap_en) : GLB_ifmap_valid;
+    assign ppc_ifmap_ready  = oc_spatial_mode ? lb_win_vec_ready              : GLB_ifmap_ready;
 
     // GLB ipsum stream: PingPong drives it during S_IPSUM phase. Data is 0
     // (the seed for the reduction), supplied via glb_sel=2 in the data mux.
     assign GLB_ipsum_valid = pp_ipsum_valid;
+    assign GLB_opsum_valid_to_oc = GLB_opsum_valid && (glb_sel == 2'd3) && !oc_spatial_mode;
+    assign GLB_opsum_ready_to_pe = GLB_opsum_ready && (glb_sel == 2'd3) && !oc_spatial_mode;
 
     // GLB data mux based on glb_sel from the controller.
     always_comb begin
@@ -451,6 +577,13 @@ module NPU_top (
         .opsum_YID_scan_in(opsum_YID_scan_in),
         .set_LN(set_LN), .LN_config_in(LN_config_in),
         .PE_en(PE_en_gated), .PE_config(pe_config),
+        .tile_start(pe_tile_start),
+        .spatial_mode(oc_spatial_mode),
+        .spatial_cols(oc_spatial_cols),
+        .spatial_ifmap_valid(lb_win_vec_valid && ifmap_en && oc_spatial_mode),
+        .spatial_ifmap_ready(pe_spatial_ifmap_ready),
+        .spatial_ifmap_data(lb_win_vec_data),
+        .spatial_ifmap_row(ifmap_tag_Y),
         .ifmap_tag_X(ifmap_tag_X),   .ifmap_tag_Y(ifmap_tag_Y),
         .filter_tag_X(filter_tag_X), .filter_tag_Y(filter_tag_Y),
         .ipsum_tag_X(ipsum_tag_X),   .ipsum_tag_Y(ipsum_tag_Y),
@@ -463,8 +596,11 @@ module NPU_top (
         .GLB_ipsum_ready(GLB_ipsum_ready),
         .GLB_data_in(GLB_data_in),
         .GLB_opsum_valid(GLB_opsum_valid),
-        .GLB_opsum_ready(GLB_opsum_ready),
-        .GLB_data_out(GLB_data_out)
+        .GLB_opsum_ready(GLB_opsum_ready_to_pe),
+        .GLB_data_out(GLB_data_out),
+        .spatial_opsum_valid(pe_spatial_opsum_valid),
+        .spatial_opsum_ready(pe_spatial_opsum_ready),
+        .spatial_opsum_data(pe_spatial_opsum_data)
     );
 
     // PSUM_acc x16, generated per lane.
@@ -492,9 +628,22 @@ module NPU_top (
         .pixel_init(oc_pixel_init), .pixel_last(oc_pixel_last),
         .layer_last(oc_layer_last),
         .lane_sel(oc_lane_sel),
+        .spatial_mode(oc_spatial_mode),
+        .spatial_cols(oc_spatial_cols),
+        .spatial_groups(oc_spatial_groups),
+        .spatial_channel(oc_spatial_channel),
+        .spatial_valid(pe_spatial_opsum_valid),
+        .spatial_tile_last(oc_spatial_tile_last),
+        .spatial_last(oc_spatial_last),
+        .spatial_data_flat(pe_spatial_opsum_data),
+        .spatial_ready(pe_spatial_opsum_ready),
+        .ppu_shift_ctrl(ppu_shift),
+        .ppu_silu_en_ctrl(ppu_silu_en),
+        .ppu_maxpool_en_ctrl(ppu_maxpool_en),
+        .ppu_maxpool_init_ctrl(ppu_maxpool_init),
         .bias_valid(bias_valid), .bias_word(bias_word),
         .bias_ready(bias_ready),
-        .opsum_valid(GLB_opsum_valid), .opsum_data($signed(GLB_data_out)),
+        .opsum_valid(GLB_opsum_valid_to_oc), .opsum_data($signed(GLB_data_out)),
         .opsum_ready(GLB_opsum_ready),
         .psum_data(oc_psum_data),
         .psum_bias(oc_psum_bias),

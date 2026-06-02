@@ -1,0 +1,66 @@
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Tue Jun  2 11:49:46 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Parsing design file '../Buffer/Weight_Buffer.sv'
+Parsing included file '../define.svh'.
+Back to file '../Buffer/Weight_Buffer.sv'.
+Parsing design file 'Weight_Buffer_bias_tb.sv'
+Parsing included file '../define.svh'.
+Back to file 'Weight_Buffer_bias_tb.sv'.
+Top Level Modules:
+       Weight_Buffer_bias_tb
+TimeScale is 1 ns / 1 ps
+Starting vcs inline pass...
+
+1 module and 0 UDP read.
+recompiling module Weight_Buffer_bias_tb
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv_weight_buffer_bias ]; then chmod a-x ../simv_weight_buffer_bias; fi
+g++  -o ../simv_weight_buffer_bias      -rdynamic  -Wl,-rpath='$ORIGIN'/simv_weight_buffer_bias.daidir -Wl,-rpath=./simv_weight_buffer_bias.daidir -Wl,-rpath=/usr/cad/synopsys/vcs/2023.12/linux64/lib -L/usr/cad/synopsys/vcs/2023.12/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1   objs/amcQw_d.o   _927437_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /usr/cad/synopsys/vcs/2023.12/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+../simv_weight_buffer_bias up to date
+CPU time: .233 seconds to compile + .158 seconds to elab + .158 seconds to link
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  2 11:49 2026
+[CHECK] bias[0] = -3158 0xfffff3aa
+[CHECK] bias[1] = 476 0x000001dc
+[CHECK] bias[2] = 1570 0x00000622
+[CHECK] bias[3] = -893 0xfffffc83
+[CHECK] bias[4] = 1846 0x00000736
+[CHECK] bias[5] = -140 0xffffff74
+[CHECK] bias[6] = 1793 0x00000701
+[CHECK] bias[7] = -480 0xfffffe20
+[CHECK] bias[8] = 256 0x00000100
+[CHECK] bias[9] = 861 0x0000035d
+[CHECK] bias[10] = -2685 0xfffff583
+[CHECK] bias[11] = 906 0x0000038a
+[CHECK] bias[12] = 1546 0x0000060a
+[CHECK] bias[13] = -397 0xfffffe73
+[CHECK] bias[14] = -611 0xfffffd9d
+[CHECK] bias[15] = 1920 0x00000780
+== Weight_Buffer_bias_tb PASS ==
+$finish called from file "Weight_Buffer_bias_tb.sv", line 103.
+$finish at simulation time              2726000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 2726000 ps
+CPU Time:      0.170 seconds;       Data structure size:   0.0Mb
+Tue Jun  2 11:49:47 2026

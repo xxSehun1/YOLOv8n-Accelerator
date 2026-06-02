@@ -1,0 +1,42 @@
+==== SiLU_Qint8_tb via VCS ====
+vcs -sverilog -full64 -timescale=1ns/1ps -debug_access+all +incdir+.. +incdir+../Control +incdir+../Buffer +incdir+../Compute +incdir+../Memory +incdir+../PE_Array +incdir+../PE_Array/GIN +incdir+../PE_Array/GON +incdir+../PPU \
+       ../PPU/SiLU_Qint8.sv SiLU_Qint8_tb.sv \
+       -top SiLU_Qint8_tb -o simv_silu_qint8
+*** Using c compiler gcc instead of cc ...
+                         Chronologic VCS (TM)
+         Version V-2023.12_Full64 -- Mon Jun  1 23:26:39 2026
+
+                    Copyright (c) 1991 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+The design hasn't changed and need not be recompiled. 
+If you really want to, delete file /home/users/xxSehun/AOC/YOLOv8n-Accelerator/Hardware/NPU/TestBench/simv_silu_qint8.daidir/.vcs.timestamp and
+run VCS again.
+
+./simv_silu_qint8
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12_Full64; Runtime version V-2023.12_Full64;  Jun  1 23:26 2026
+== SiLU_Qint8 LUT exhaustive test ==
+== SiLU_Qint8_tb PASS: 256 LUT entries and passthrough matched ==
+$finish called from file "SiLU_Qint8_tb.sv", line 102.
+$finish at simulation time               512000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 512000 ps
+CPU Time:      0.190 seconds;       Data structure size:   0.0Mb
+Mon Jun  1 23:26:40 2026

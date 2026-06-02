@@ -7,7 +7,9 @@ module ConfigLoader #(
 
     parameter [`NUMS_PE_ROW-2:0] LN_CONFIG_INIT = 15'h36DB,
 
-    parameter [NUM_PE-1:0]       PE_EN_INIT = {{16{1'b0}}, {240{1'b1}}}
+    parameter [NUM_PE-1:0]       PE_EN_INIT = {{16{1'b0}}, {240{1'b1}}},
+    parameter int                ACTIVE_SETS_INIT = 1,
+    parameter int                ACTIVE_COLS_INIT = `NUMS_PE_COL
 )(
     input  logic clk,
     input  logic rst,
@@ -37,6 +39,7 @@ module ConfigLoader #(
     localparam int Y = `YID_BITS;
     localparam int ROM_W = 4*X + 4*Y;
     localparam int CNT_W = $clog2(NUM_PE + 1);
+    localparam logic [`XID_BITS-1:0] DEFAULT_XID = {`XID_BITS{1'b1}};
 
     // Per-PE scan ROM, loaded once from SCAN_HEX at elaboration.
     logic [ROM_W-1:0] scan_rom [0:NUM_PE-1];
@@ -93,12 +96,32 @@ module ConfigLoader #(
     //   YID phase: feed scan_rom[(NUMS_PE_ROW-1-cnt) * NUMS_PE_COL]; YID is
     //              row-shared so all PEs in a row carry the same YID values
     //              in their scan_rom entry. We read column 0 of each row.
+    logic [ROM_W-1:0] raw_cur;
     logic [ROM_W-1:0] cur;
+    logic [CNT_W-1:0] scan_idx;
+    logic [15:0]      scan_row;
+    logic [15:0]      scan_col;
+    logic             scan_xid_active;
+
+    assign scan_idx = NUM_PE - 1 - cnt;
+    assign scan_row = scan_idx >> $clog2(`NUMS_PE_COL);
+    assign scan_col = scan_idx[$clog2(`NUMS_PE_COL)-1:0];
+    assign scan_xid_active = (scan_row < ACTIVE_SETS_INIT * 16'd3)
+                          && (scan_col < ACTIVE_COLS_INIT);
+
     always_comb begin
         if (state == S_SCAN_YID)
-            cur = scan_rom[(`NUMS_PE_ROW - 1 - cnt) * `NUMS_PE_COL];
+            raw_cur = scan_rom[(`NUMS_PE_ROW - 1 - cnt) * `NUMS_PE_COL];
         else
-            cur = scan_rom[NUM_PE - 1 - cnt];
+            raw_cur = scan_rom[NUM_PE - 1 - cnt];
+
+        cur = raw_cur;
+        if (state == S_SCAN_XID && !scan_xid_active) begin
+            cur[0       +: X] = DEFAULT_XID;
+            cur[  X     +: X] = DEFAULT_XID;
+            cur[2*X     +: X] = DEFAULT_XID;
+            cur[3*X     +: X] = DEFAULT_XID;
+        end
     end
 
     assign ifmap_XID_scan_in  = cur[0       +: X];
@@ -114,9 +137,20 @@ module ConfigLoader #(
     assign set_YID = (state == S_SCAN_YID);
     assign set_LN  = (state == S_SCAN_LN);
 
-    // LN_CONFIG and PE_en are static
+    logic [NUM_PE-1:0] pe_en_active;
+    always_comb begin
+        pe_en_active = '0;
+        for (int i = 0; i < NUM_PE; i++) begin
+            if ((i / `NUMS_PE_COL) < ACTIVE_SETS_INIT * 3
+             && (i % `NUMS_PE_COL) < ACTIVE_COLS_INIT) begin
+                pe_en_active[i] = 1'b1;
+            end
+        end
+    end
+
+    // LN_CONFIG is static; PE_en is masked to the active spatial tile width.
     assign LN_config_in = LN_CONFIG_INIT;
-    assign PE_en        = PE_EN_INIT;
+    assign PE_en        = PE_EN_INIT & pe_en_active;
 
     assign cfg_done = (state == S_DONE);
 

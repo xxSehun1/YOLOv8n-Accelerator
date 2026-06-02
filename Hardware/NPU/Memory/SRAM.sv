@@ -30,11 +30,23 @@ module SRAM #(
 
     logic [DATA_BITS-1:0] mem [0:WORDS-1];
 
-    // Port 0.
+    logic [DATA_BITS-1:0] a_rdata_hold;
+
+    // Port 0.  Active reads are asynchronous so the output IOMap fallback
+    // RMW path can use this port; when idle, hold the last read value for
+    // DMA_ctrl's S_RD -> S_WR store sequence.
     always @(posedge clk) begin
         if (a_en) begin
             if (a_we) mem[a_addr[ADDR_BITS-1:WORD_LSB]] <= a_wdata;
-            a_rdata <= mem[a_addr[ADDR_BITS-1:WORD_LSB]];
+            a_rdata_hold <= mem[a_addr[ADDR_BITS-1:WORD_LSB]];
+        end
+    end
+
+    always_comb begin
+        if (a_en) begin
+            a_rdata = mem[a_addr[ADDR_BITS-1:WORD_LSB]];
+        end else begin
+            a_rdata = a_rdata_hold;
         end
     end
 

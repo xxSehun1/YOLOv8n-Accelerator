@@ -34,6 +34,13 @@ module PE_array #(
     /* Controller */
     input [`NUMS_PE_ROW*`NUMS_PE_COL-1:0] PE_en,
     input [`CONFIG_SIZE-1:0] PE_config,
+    input tile_start,
+    input spatial_mode,
+    input [15:0] spatial_cols,
+    input spatial_ifmap_valid,
+    output logic spatial_ifmap_ready,
+    input [NUMS_PE_COL*DATA_SIZE-1:0] spatial_ifmap_data,
+    input [`YID_BITS-1:0] spatial_ifmap_row,
     input [`XID_BITS-1:0] ifmap_tag_X,
     input [`YID_BITS-1:0] ifmap_tag_Y,
     input [`XID_BITS-1:0] filter_tag_X,
@@ -54,12 +61,18 @@ module PE_array #(
 
     output logic GLB_opsum_valid,
     input GLB_opsum_ready,
-    output logic [DATA_SIZE-1:0] GLB_data_out
+    output logic [DATA_SIZE-1:0] GLB_data_out,
+
+    output logic spatial_opsum_valid,
+    input  logic spatial_opsum_ready,
+    output logic [NUMS_PE_COL*DATA_SIZE-1:0] spatial_opsum_data
 
 );
 /* TODO: Start writing your implementation here */
 
 localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
+localparam int SPATIAL_TOP_ROW = 0;
+localparam int SPATIAL_BOTTOM_ROW = 2;
 
 
     // Ifmap GIN Signal
@@ -87,6 +100,37 @@ localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
     logic [NUM_PE-1:0]    pe_opsum_ready_in;
     logic [DATA_SIZE-1:0] pe_opsum_data_out [0:NUM_PE-1];
 
+    logic GLB_ipsum_ready_gin;
+    logic spatial_ifmap_all_ready;
+    logic spatial_ifmap_fire;
+    logic spatial_ipsum_all_ready;
+    logic spatial_ipsum_fire;
+
+    always_comb begin
+        spatial_ifmap_all_ready = 1'b1;
+        spatial_ipsum_all_ready = 1'b1;
+        spatial_opsum_valid = (spatial_cols != 16'd0);
+        spatial_opsum_data = '0;
+        for (int c = 0; c < NUMS_PE_COL; c++) begin
+            int ifmap_idx;
+            int bottom_idx;
+            int top_idx;
+            ifmap_idx = spatial_ifmap_row * NUMS_PE_COL + c;
+            bottom_idx = SPATIAL_BOTTOM_ROW * NUMS_PE_COL + c;
+            top_idx = SPATIAL_TOP_ROW * NUMS_PE_COL + c;
+            spatial_opsum_data[c*DATA_SIZE +: DATA_SIZE] = pe_opsum_data_out[top_idx];
+            if (c < spatial_cols) begin
+                spatial_ifmap_all_ready &= ifmap_ready[ifmap_idx];
+                spatial_ipsum_all_ready &= pe_ipsum_ready_out[bottom_idx];
+                spatial_opsum_valid &= pe_opsum_valid_out[top_idx];
+            end
+        end
+    end
+
+    assign spatial_ifmap_fire = spatial_mode && spatial_ifmap_valid && spatial_ifmap_all_ready;
+    assign spatial_ifmap_ready = spatial_mode && spatial_ifmap_all_ready;
+    assign spatial_ipsum_fire = spatial_mode && GLB_ipsum_valid && spatial_ipsum_all_ready;
+    assign GLB_ipsum_ready = spatial_mode ? spatial_ipsum_all_ready : GLB_ipsum_ready_gin;
 
     GIN ifmap_GIN (
         .clk(clk), 
@@ -126,7 +170,7 @@ localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
         .clk(clk),
         .rst(rst),
         .GIN_valid(GLB_ipsum_valid),
-        .GIN_ready(GLB_ipsum_ready),
+        .GIN_ready(GLB_ipsum_ready_gin),
         .GIN_data(GLB_data_in),
         .tag_X(ipsum_tag_X),
         .tag_Y(ipsum_tag_Y),
@@ -170,7 +214,12 @@ localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
 
                 logic sel_LN;
                 logic used_by_LN_above;
-
+                logic use_spatial_ifmap;
+                logic use_spatial_ipsum;
+                logic use_spatial_opsum;
+                logic [`DATA_BITS-1:0] pe_ifmap_data;
+                logic pe_ifmap_valid;
+ 
                 assign pe_opsum_data_flat[idx*DATA_SIZE +: DATA_SIZE] = pe_opsum_data_out[idx];
 
 
@@ -186,12 +235,30 @@ localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
                     assign used_by_LN_above = LN_config_in[row-1];
                 end
 
+                assign use_spatial_ipsum = spatial_mode && (row == SPATIAL_BOTTOM_ROW)
+                                         && (col < spatial_cols);
+                assign use_spatial_opsum = spatial_mode && (row == SPATIAL_TOP_ROW)
+                                         && (col < spatial_cols);
+                assign use_spatial_ifmap = spatial_mode && (row == spatial_ifmap_row)
+                                         && (col < spatial_cols);
 
+                assign pe_ifmap_data  = use_spatial_ifmap ? spatial_ifmap_data[col*DATA_SIZE +: DATA_SIZE]
+                                                           : ifmap_data;
+                assign pe_ifmap_valid = use_spatial_ifmap ? spatial_ifmap_fire
+                                                           : ifmap_valid[idx];
+ 
                 assign pe_ipsum_data_in[idx]  = sel_LN ? pe_opsum_data_out[idx_below]  : gin_ipsum_data;
-                assign pe_ipsum_valid_in[idx] = sel_LN ? pe_opsum_valid_out[idx_below] : gin_ipsum_valid[idx];
-                assign gin_ipsum_ready[idx]   = sel_LN ? 1'b1 : pe_ipsum_ready_out[idx];
+                assign pe_ipsum_valid_in[idx] = sel_LN ? pe_opsum_valid_out[idx_below]
+                                                        : (use_spatial_ipsum ? spatial_ipsum_fire
+                                                                             : gin_ipsum_valid[idx]);
+                assign gin_ipsum_ready[idx]   = sel_LN ? 1'b1
+                                                        : (use_spatial_ipsum ? 1'b1
+                                                                             : pe_ipsum_ready_out[idx]);
                 assign gon_opsum_valid[idx]   = used_by_LN_above ? 1'b0 : pe_opsum_valid_out[idx];
-                assign pe_opsum_ready_in[idx] = used_by_LN_above ? pe_ipsum_ready_out[idx_above] : gon_opsum_ready[idx];
+                assign pe_opsum_ready_in[idx] = used_by_LN_above ? pe_ipsum_ready_out[idx_above]
+                                                                  : (use_spatial_opsum
+                                                                     ? (spatial_opsum_valid && spatial_opsum_ready)
+                                                                     : gon_opsum_ready[idx]);
 
 
                 PE pe_inst (
@@ -199,11 +266,12 @@ localparam NUM_PE = NUMS_PE_ROW * NUMS_PE_COL;
                     .clk(clk),
                     .rst(rst),
                     .PE_en(PE_en[idx]),
+                    .tile_start(tile_start),
                     .i_config(PE_config),
-                    .ifmap(ifmap_data),
+                    .ifmap(pe_ifmap_data),
                     .filter(filter_data),
                     .ipsum(pe_ipsum_data_in[idx]),
-                    .ifmap_valid(ifmap_valid[idx]),
+                    .ifmap_valid(pe_ifmap_valid),
                     .filter_valid(filter_valid[idx]),
                     .ipsum_valid(pe_ipsum_valid_in[idx]),
                     .opsum_ready(pe_opsum_ready_in[idx]),
